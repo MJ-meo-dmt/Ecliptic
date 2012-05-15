@@ -1,0 +1,280 @@
+<CoordinateSystem> { Z-up } 
+
+<Comment> {
+  "egg-trans -tbnall -o 'D:\Project Main Source\rpg\crate_2.egg' 'D:\Project Main Source\rpg\crate_2.egg'"
+}
+<Texture> crate_d.png {
+  "crate/crate_d.png"
+}
+<Texture> Texture.001 {
+  "crate/crate_n.png"
+  <Scalar> envtype { normal }
+}
+<Texture> Texture {
+  "crate/crate_d.png"
+}
+<Material> Material {
+  <Scalar> diffr { 0.64 }
+  <Scalar> diffg { 0.64 }
+  <Scalar> diffb { 0.64 }
+  <Scalar> emitr { 0 }
+  <Scalar> emitg { 0 }
+  <Scalar> emitb { 0 }
+  <Scalar> specr { 0.5 }
+  <Scalar> specg { 0.5 }
+  <Scalar> specb { 0.5 }
+  <Scalar> shininess { 12.5 }
+}
+<Group> Cube {
+  <Collide> { Polyset keep descend }
+  <Transform> {
+    <Matrix4> {
+      1 0 0 0
+      0 1 0 0
+      0 0 1 0
+      0 0 0 1
+    }
+  }
+  <VertexPool> Cube {
+    <Vertex> 0 {
+      -0.447 -0.449 0.008
+      <UV> {
+        1.004 0
+        <Tangent> { 0 -0.999996 0.00298803 }
+        <Binormal> { 0 0.00298803 0.999996 }
+      }
+    }
+    <Vertex> 1 {
+      -0.447 -0.449 0.008
+      <UV> {
+        1.006 1.001
+        <Tangent> { -0.999992 0 -0.00400397 }
+        <Binormal> { 0.00400397 0 -0.999992 }
+      }
+    }
+    <Vertex> 2 {
+      -0.447 -0.449 0.008
+      <UV> {
+        1.004 1.004
+        <Tangent> { -0.00298506 -0.999996 0 }
+        <Binormal> { -0.999996 0.00298506 0 }
+      }
+    }
+    <Vertex> 3 {
+      -0.447 -0.449 0.901
+      <UV> {
+        1.007 1.004
+        <Tangent> { 0 -0.999996 0.00298803 }
+        <Binormal> { 0 0.00298803 0.999996 }
+      }
+    }
+    <Vertex> 4 {
+      -0.447 -0.449 0.901
+      <UV> {
+        1.003 0.002
+        <Tangent> { -0.999995 0 -0.00300299 }
+        <Binormal> { 0.00300299 0 -0.999995 }
+      }
+    }
+    <Vertex> 5 {
+      -0.447 -0.449 0.901
+      <UV> {
+        -0.004 0.995
+        <Tangent> { 0.00298506 0.999996 0 }
+        <Binormal> { -0.999996 0.00298506 0 }
+      }
+    }
+    <Vertex> 6 {
+      -0.447 0.444 0.008
+      <UV> {
+        0 0.003
+        <Tangent> { 0 -0.999996 0.00298803 }
+        <Binormal> { 0 0.00298803 0.999996 }
+      }
+    }
+    <Vertex> 7 {
+      -0.447 0.444 0.008
+      <UV> {
+        -0.001 1.007
+        <Tangent> { -0.00298506 -0.999996 0 }
+        <Binormal> { -0.999996 0.00298506 0 }
+      }
+    }
+    <Vertex> 8 {
+      -0.447 0.444 0.008
+      <UV> {
+        1 0.003
+        <Tangent> { -1 0 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 9 {
+      -0.447 0.444 0.901
+      <UV> {
+        0.003 1.007
+        <Tangent> { 0 -0.999996 0.00298803 }
+        <Binormal> { 0 0.00298803 0.999996 }
+      }
+    }
+    <Vertex> 10 {
+      -0.447 0.444 0.901
+      <UV> {
+        1 0.998
+        <Tangent> { 0.00298803 0.999996 0 }
+        <Binormal> { -0.999996 0.00298803 0 }
+      }
+    }
+    <Vertex> 11 {
+      -0.447 0.444 0.901
+      <UV> {
+        1 1.002
+        <Tangent> { -1 0 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 12 {
+      0.446 -0.449 0.008
+      <UV> {
+        0.007 1.005
+        <Tangent> { -0.999992 0 -0.00399997 }
+        <Binormal> { 0.00399997 0 -0.999992 }
+      }
+    }
+    <Vertex> 13 {
+      0.446 -0.449 0.008
+      <UV> {
+        1.001 -0.001
+        <Tangent> { -0.00298506 -0.999996 0 }
+        <Binormal> { -0.999996 0.00298506 0 }
+      }
+    }
+    <Vertex> 14 {
+      0.446 -0.449 0.008
+      <UV> {
+        -0.001 -0.006
+        <Tangent> { 0 0.999996 0.00298209 }
+        <Binormal> { 0 -0.00298209 0.999996 }
+      }
+    }
+    <Vertex> 15 {
+      0.446 -0.449 0.901
+      <UV> {
+        0.004 0.005
+        <Tangent> { -0.999996 0 -0.00299999 }
+        <Binormal> { 0.00299999 0 -0.999996 }
+      }
+    }
+    <Vertex> 16 {
+      0.446 -0.449 0.901
+      <UV> {
+        -0.001 -0.01
+        <Tangent> { 0.00398007 0.999992 0 }
+        <Binormal> { -0.999992 0.00398007 0 }
+      }
+    }
+    <Vertex> 17 {
+      0.446 -0.449 0.901
+      <UV> {
+        0.002 1
+        <Tangent> { 0 0.999996 0.00298209 }
+        <Binormal> { 0 -0.00298209 0.999996 }
+      }
+    }
+    <Vertex> 18 {
+      0.446 0.444 0.008
+      <UV> {
+        -0.004 0.002
+        <Tangent> { -0.00298506 -0.999996 0 }
+        <Binormal> { -0.999996 0.00298506 0 }
+      }
+    }
+    <Vertex> 19 {
+      0.446 0.444 0.008
+      <UV> {
+        0.001 0.003
+        <Tangent> { -1 0 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 20 {
+      0.446 0.444 0.008
+      <UV> {
+        1.004 -0.009
+        <Tangent> { 0 0.999996 0.00298209 }
+        <Binormal> { 0 -0.00298209 0.999996 }
+      }
+    }
+    <Vertex> 21 {
+      0.446 0.444 0.901
+      <UV> {
+        1.003 -0.006
+        <Tangent> { 0.00398403 0.999992 0 }
+        <Binormal> { -0.999992 0.00398403 0 }
+      }
+    }
+    <Vertex> 22 {
+      0.446 0.444 0.901
+      <UV> {
+        0.001 1.002
+        <Tangent> { -1 0 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 23 {
+      0.446 0.444 0.901
+      <UV> {
+        1.007 0.997
+        <Tangent> { 0 0.999996 0.00298209 }
+        <Binormal> { 0 -0.00298209 0.999996 }
+      }
+    }
+  }
+  <Polygon> {
+    <Normal> { 0 0 -1 }
+    <TRef> { crate_d.png }
+    <TRef> { Texture }
+    <TRef> { Texture.001 }
+    <MRef> { Material }
+    <VertexRef> { 18 13 2 7 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { 0 0 1 }
+    <TRef> { crate_d.png }
+    <TRef> { Texture }
+    <TRef> { Texture.001 }
+    <MRef> { Material }
+    <VertexRef> { 21 10 5 16 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { 1 0 0 }
+    <TRef> { crate_d.png }
+    <TRef> { Texture }
+    <TRef> { Texture.001 }
+    <MRef> { Material }
+    <VertexRef> { 20 23 17 14 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { 0 -1 0 }
+    <TRef> { crate_d.png }
+    <TRef> { Texture }
+    <TRef> { Texture.001 }
+    <MRef> { Material }
+    <VertexRef> { 12 15 4 1 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { -1 0 0 }
+    <TRef> { crate_d.png }
+    <TRef> { Texture }
+    <TRef> { Texture.001 }
+    <MRef> { Material }
+    <VertexRef> { 0 3 9 6 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { 0 1 0 }
+    <TRef> { crate_d.png }
+    <TRef> { Texture }
+    <TRef> { Texture.001 }
+    <MRef> { Material }
+    <VertexRef> { 22 19 8 11 <Ref> { Cube } }
+  }
+}
