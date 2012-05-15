@@ -1,0 +1,18 @@
+#
+# Todo list
+#------------>
+
+1. Setup a basic level or room. 
+    - Made a blend file, need to add the collid props.
+  ! - Need to redo the current room, since the "wall" collisions are up too shit.
+
+2. Setup a basic first person camera
+    - Done: Used snip code from Treeform
+
+3. Setup the basic movement with the camera
+    - Done:
+
+4. Setup some basic collision detection
+    - Done: But I think the level's "collider" props are setup wrong, makes the PC jump around when colliding with wall, or sometimes the player would go 
+	pass the wall.
+
