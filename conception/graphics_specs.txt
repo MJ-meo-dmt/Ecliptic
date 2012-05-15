@@ -1,0 +1,42 @@
+Technical specifications (only graphics there) :
+
+
+What We Have :
+
+Volumetric lighting 
+For opaque, semi-transparent or transparent objects (we can choose volumetric shadow color and volumetric light color).
+Add depth to scene, good for immersion and wow effect.
+Easy to implement, working code ready, not much gpu power required.
+
+Volumetric dust
+Better vizualize 3-dimensional space/scene, using volum. light. code actually.
+Can have dust, metal particles, whatever particles, space tornadoes, hull breach...
+Pre-computed animations done in Blender.
+Requires some time to export from Blender to Panda3D.
+
+Depth of field
+Add immersion + wow effect.
+For cutscenes, title screens, introduction...
+Requires some GPU power.
+Easy to implement, code already working.
+Can get some people dizzy or cause eye-strain.
+
+Shadows
+Depth map shadows.
+Default shadows from Panda3D or custom code for directional lights (paralell shadows code working).
+No 360° shadows (point lights) at the moment.
+
+Lighting
+Deferred lighting custom => no transparency, more work
+	or 
+Fixed pipeline => transparency, easy texturing (gloss, normal, specular, albedo..)
+
+
+What We Need
+Custom shader for metal (anisotropic specular), in worst case we can use Strauss lighting model.
+Project a fake holographic GUI on a plane / model.
+Custom shader for glass / windows with simple or complex reflexions (can re-use water shader code).
+
+
+
+
