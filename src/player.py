@@ -12,7 +12,6 @@ from direct.task import Task
 from direct.showbase.DirectObject import DirectObject
 
 # Game imports
-from collTrav import *
 from globals import *
 
 
@@ -76,34 +75,36 @@ class MakePlayer(Player):
                 
 	# Setup the spawn position
 	self.entityPlayer.setPos(0, 0, 0)
-                
-	# Setup collision solid for the PC - Player
-	# initialize traverser 
-	base.cTrav = CollisionTraverser() 
-	base.cTrav.setRespectPrevTransform(True)
 	
-	# collision bits 
+	#> Setup collision solids for the PC - Player
+	
+	# collision bits for player
 	self.groundCollBit = BitMask32.bit(0) 
 	self.collBitOff = BitMask32.allOff()
-	# Player collision sphere and collider
-	playerCollision = self.entityPlayer.attachCollisionSphere('PCsphere', 0,0,1, .4, self.groundCollBit, self.collBitOff) 
-                
-	# initialize pusher 
-	self.playerPusher = CollisionHandlerPusher() 
-	self.playerPusher.addCollider(playerCollision, self.entityPlayer) 
-	base.cTrav.addCollider(playerCollision, self.playerPusher)
-                
-	# Setup player ground Ray
-	self.playerGroundColNp = self.entityPlayer.attachCollisionRay( 'PCRay', 
-								0,0,.6, 0,0,-1, 
-					    self.groundCollBit, self.collBitOff) 
-					    
-	self.playerGroundHandler = CollisionHandlerGravity() 
-	self.playerGroundHandler.addCollider(self.playerGroundColNp, self.entityPlayer) 
-	base.cTrav.addCollider(self.playerGroundColNp, self.playerGroundHandler)
-                
-	base.cTrav.showCollisions(render) 
-                
+	
+	# This way seem to bug out.
+	#playerCollision = self.entityPlayer.attachCollisionSphere('PCsphere', 0,0,1, .4, self.groundCollBit, self.collBitOff)
+	
+	# Collision Sphere for player: cx, cy, cz, r
+	self.playerColl = CollisionSphere(0, 0, 1, .4)
+        self.playercollNode = CollisionNode('PCsphere')
+        self.playercollNode.addSolid(self.playerColl)
+        self.playercollNode.setFromCollideMask(self.groundCollBit)
+        self.playercollNode.setIntoCollideMask(self.collBitOff)
+        self.playercollNodePath = self.entityPlayer.attachNewNode(self.playercollNode)  # THis goes to self.playerPusher as playerCollision
+	
+	# This way seem to bug out.
+	#self.playerGroundColNp = self.entityPlayer.attachCollisionRay( 'PCRay', 
+	#							0,0,.6, 0,0,-1, 
+	#				    self.groundCollBit, self.collBitOff) 
+	
+	# Collision Ray for player: ox, oy, oz, dx, dy, dz
+	self.playerCollRay = CollisionRay(0, 0, .6, 0, 0, -1)
+        self.playercollNodeRay = CollisionNode('PCRay')
+        self.playercollNodeRay.addSolid(self.playerCollRay)
+        self.playercollNodeRay.setFromCollideMask(self.groundCollBit)
+        self.playercollNodeRay.setIntoCollideMask(self.collBitOff)
+        self.playercollNodePathRay = self.entityPlayer.attachNewNode(self.playercollNodeRay)
 
 ## Player Input Class
 class PlayerInput(DirectObject):
@@ -153,19 +154,19 @@ class PlayerInput(DirectObject):
     # This is for calculating the jump.
     def jump(self, dt):
 	# Get the "floating" from player object. 
-	playerFloating = ENTITY['PC'].floating
+	self.playerFloating = ENTITY['PC'].floating
 	# Get the player - PC
-	playerPc = ENTITY['PC'].entityPlayer
+	self.playerPc = ENTITY['PC'].entityPlayer
                 
-	if not playerFloating:
-		playerFloating=True
-		lf=LerpFunc(lambda z: playerPc.setZ(z),
-			fromData = playerPc.getZ(),
-			toData = playerPc.getZ()+1.0, duration = 0.7,
+	if not self.playerFloating:
+		self.playerFloating=True
+		lf=LerpFunc(lambda z: self.playerPc.setZ(z),
+			fromData = self.playerPc.getZ(),
+			toData = self.playerPc.getZ()+1.0, duration = 0.7,
 			blendType = 'easeOut')
 		self.seq=Sequence(lf, Wait(.7))
 		self.seq.start()
-	elif not self.seq.isPlaying(): playerFloating=False
+	elif not self.seq.isPlaying(): self.playerFloating=False
         
     def move(self, task):
                 

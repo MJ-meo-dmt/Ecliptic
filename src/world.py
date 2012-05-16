@@ -30,7 +30,13 @@ class World(DirectObject):
 	
 	def __init__(self):
 		
-		pass 
+		# Setup lights for the level
+		
+		plight = PointLight('plight')
+		plight.setColor(VBase4(0.7, 0.7, 0.7, 1))
+		plnp = render.attachNewNode(plight)
+		plnp.setPos(0, 0, 5)
+		render.setLight(plnp)
 		
 	def addLevel(self, levelName, levelObject):
 		"""
@@ -69,13 +75,7 @@ class MakeLevel():
 		self.dummylevel.reparentTo(render)
 		
 		
-		# Setup lights for the level
 		
-		plight = PointLight('plight')
-		plight.setColor(VBase4(0.7, 0.7, 0.7, 1))
-		plnp = render.attachNewNode(plight)
-		plnp.setPos(0, 0, 5)
-		render.setLight(plnp)
 		
 		
 		

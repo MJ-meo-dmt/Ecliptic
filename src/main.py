@@ -28,6 +28,7 @@ from direct.showbase.DirectObject import DirectObject
 # Game imports
 from world import *
 from player import *
+from collisions import *
 from globals import *
 
 
@@ -49,6 +50,7 @@ class Main(ShowBase):
 		
 		# init the main methods
 		self.init_player()
+		self.init_collisions()
 		self.init_world()
 		self.init_input()
 		
@@ -56,9 +58,12 @@ class Main(ShowBase):
 		
 		self.WorldClass = World()
 		
-		self.level1 = MakeLevel('level', "../assets/models/house1")
+		self.level1 = MakeLevel('level', "../assets/models/stage1")
+		self.testWall = MakeLevel('wall', "../assets/models/wall")
 		
 		self.WorldClass.addLevel('Level', self.level1)
+		self.WorldClass.addLevel('Wall', self.testWall)
+		LEVELS['Wall'].dummylevel.setTwoSided(True)
 		
 		
 	def init_player(self):
@@ -69,6 +74,11 @@ class Main(ShowBase):
 		self.playerPC = MakePlayer("PC_Player")
 		
 		self.PlayerClass.addEntity("PC", self.playerPC)
+		
+	def init_collisions(self):
+	    
+		# Setup collisions
+		self.CollisionClass = Collisions()
 		
 	def init_input(self):
 		
