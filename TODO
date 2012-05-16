@@ -10,7 +10,7 @@
     - Done: Used snip code from Treeform
 
 3. Setup the basic movement with the camera
-    - Done:
+    - Done: Movement works fine, only jump needs some fixing...
 
 4. Setup some basic collision detection
     - Done: Replaced the old model and tested with new model that worked fine.
