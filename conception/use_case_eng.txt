@@ -1,0 +1,60 @@
+ 
+John, 22 Ecliptic Space installs the game.
+
+He starts the game
+
+He sees a title screen display (2D Art), he presses enter to start the game
+
+Black screen => melted.
+
+The player is in a very small space (a pod of cryonics), he sees the light
+through the small glass pod. Shortly after, the light pod is activated, the
+sliding door of the pod is half-open. The player finds himself in a dark room,
+the only light source comes from another door (the one leading to the control
+center). He heads for the door, and saw a panel on the side of the door that
+would open the door. The panel asks for a code. He tries to tapper a random
+code, access is denied.
+
+He looks around him and stands in the shadows 3 other doors. He sees a faint
+light from a parts (storage room). He heads for the door of the storage room and
+presses the button panel that is located next to it. The door opens. He enters
+the room, the room is very dark, he distinguishes the ground already a
+flashlight on. He picks up the torch and light areas of the room. There is an
+inscription on the wall (human writing / blood) is a 3 digit code, he
+understands that this code should open the door to the control room.
+
+He goes to the door of the control room and returned the 3 digit code on the
+panel. The door opens, entering the cockpit, all the lights are reactivated, a
+screen appears on the ship's porthole. An artificial intelligence awakens, she
+tells him that the ship fails, and must repair the engine. AI tells him she
+opened the hatch leading to the engine room. The player comes in and the engine
+room, there is smoke everywhere, everything is dark, only allows his flashlight
+to illuminate areas of the room. He realizes that the energy block of the main
+motor is dead, he removed, he picks up a block of nine energy found on the floor
+and places it in the engine block for this purpose. The lights in the engine
+room are reactivated. Artificial intelligence tells him that the engines are
+operational again.
+
+The player returns to the cockpit. The AI ​​appears on the screen an image of
+the Earth and tells him that she forgot the coordinates of the Earth (+
+background story blah blah). The AI ​​displays a map (of the galaxy?) And tells
+her that she spotted a body in a region of space. It appears the coordinates of
+the area of ​​space. The player sees another panel is in the cockpit and enables
+him to enter the coordinates he has just seen. The player returns the
+coordinates, valid, the ship shakes and starts. The player sees the stars to
+scroll through the porthole of the ship, he realizes that the ship moves.
+
+During the trip, the AI ​​tells him he must be equipped with a combination
+before going out into space. She indicates that the combination is in the
+storage room and she has just released his pod conservation. The player goes
+into the storage room, sees the combination and puts it on. A GUI is displayed
+on the visor of the suit. The AI ​​then indicates that the ship is soon arrived.
+The player can then go into the cockpit and wait for the ride. Once the ship
+stopped, AI says it has activated the airlock leading to the decompression room.
+The player can distinguish it has landed on a space station. He enters the
+airlock decompression, the door closes behind him, the light illuminating the
+room changes from red to green after a few seconds. The door leading to the
+outside of the vessel is opened. The player realizes that he can leave the ship.
+He sees a desolate area, disused, the space station is in poor condition. The AI
+​​of the ship shows the player thanks to its combination, it has detected a
+source of life on the station.
