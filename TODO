@@ -13,6 +13,5 @@
     - Done:
 
 4. Setup some basic collision detection
-    - Done: But I think the level's "collider" props are setup wrong, makes the PC jump around when colliding with wall, or sometimes the player would go 
-	pass the wall.
+    - Done: Replaced the old model and tested with new model that worked fine.
 
