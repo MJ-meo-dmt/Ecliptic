@@ -28,8 +28,9 @@ from direct.showbase.DirectObject import DirectObject
 # Game imports
 from world import *
 from player import *
-from collisions import *
+#from collisions import *
 from globals import *
+from physics import *
 
 
 
@@ -50,9 +51,15 @@ class Main(ShowBase):
 		
 		# init the main methods
 		self.init_player()
-		self.init_collisions()
+		#self.init_collisions()
 		self.init_world()
 		self.init_input()
+		self.physics = Physics()
+		
+		
+		# Debug: Show the scene graph.
+		self.render.ls()
+		
 		
 	def init_world(self):
 		
@@ -83,7 +90,7 @@ class Main(ShowBase):
 	def init_input(self):
 		
 		# Setup the controls
-		self.playerControl = PlayerInput()
+		self.playerControl = PlayerInput(self)
 		
 		
 		
