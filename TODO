@@ -14,3 +14,5 @@
 4. Setup some basic collision detection
     - Done: Replaced the old model and tested with new model that worked fine.
 
+5. Setup bullet for physics.
+
