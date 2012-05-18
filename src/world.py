@@ -32,6 +32,8 @@ class World(DirectObject):
 		
 		# Setup lights for the level
 		
+		self.test = "hello"
+		
 		plight = PointLight('plight')
 		plight.setColor(VBase4(0.7, 0.7, 0.7, 1))
 		plnp = render.attachNewNode(plight)
