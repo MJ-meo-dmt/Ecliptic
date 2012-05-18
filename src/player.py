@@ -12,6 +12,7 @@ from direct.task import Task
 from direct.showbase.DirectObject import DirectObject
 
 # Game imports
+from devconfig import *
 from globals import *
 
 
@@ -29,7 +30,6 @@ class Player(object):
  
     def __init__(self): 	    
 	pass
-        
         # These are players and other entities
     def addEntity(self, entityKey, entityObject):
 	"""
@@ -63,7 +63,7 @@ class MakePlayer(Player):
 	self.playerName = name
                 
 	# Setup Player Move Speed
-	self.playerSpeed = 4 # 
+	self.playerSpeed = PCSpeed # 
 	self.isPlayerMoving = False # This should be used with PlayerInput.
 	self.floating = False # For the jump function
                 
@@ -77,7 +77,7 @@ class MakePlayer(Player):
 	self.entityPlayer.setPos(0, 0, 0)
 	
 	#> Setup collision solids for the PC - Player
-	
+	'''
 	# collision bits for player
 	self.groundCollBit = BitMask32.bit(0) 
 	self.collBitOff = BitMask32.allOff()
@@ -105,7 +105,7 @@ class MakePlayer(Player):
         self.playercollNodeRay.setFromCollideMask(self.groundCollBit)
         self.playercollNodeRay.setIntoCollideMask(self.collBitOff)
         self.playercollNodePathRay = self.entityPlayer.attachNewNode(self.playercollNodeRay)
-
+	'''
 ## Player Input Class
 class PlayerInput(DirectObject):
         
@@ -115,8 +115,11 @@ class PlayerInput(DirectObject):
     Handles all the Inputs from the "PC" aka Player
         
     """     
-    def __init__(self):
-                
+    def __init__(self, mp):
+	
+	# From main - Main physics
+	self.mp = mp
+	
 	# Get the screen size for the camera controller
 	self.winXhalf = base.win.getXSize()/2 
 	self.winYhalf = base.win.getYSize()/2
@@ -124,8 +127,8 @@ class PlayerInput(DirectObject):
 	# Reparent the camera to the player
 	base.camera.reparentTo(ENTITY['PC'].entityPlayer) 
 	base.camera.setPos(0,0,1.7) 
-	base.camLens.setNearFar(.1,1000)
-	base.camLens.setFov(70) 
+	base.camLens.setNearFar(camNear,camFar)
+	base.camLens.setFov(camFov) 
 	base.disableMouse() 
                 
 	# Set the control maps.
@@ -136,6 +139,7 @@ class PlayerInput(DirectObject):
                 
 	### SETUP KEYBOARD ###
 	self.accept( "escape",sys.exit ) 
+	'''
 	self.accept("w", self.setControl, ["forward", 1])
 	self.accept("a", self.setControl, ["left", 1])
 	self.accept("s", self.setControl, ["backward", 1])
@@ -167,11 +171,11 @@ class PlayerInput(DirectObject):
 		self.seq=Sequence(lf, Wait(.7))
 		self.seq.start()
 	elif not self.seq.isPlaying(): self.playerFloating=False
-        
+        '''
     def move(self, task):
                 
 	# Get the player - PC
-	self.player = ENTITY['PC'].entityPlayer
+	self.player = self.mp.physics.actorNP
 	# Get the player speed
 	self.playerSpeed = ENTITY['PC'].playerSpeed
                 
@@ -184,7 +188,8 @@ class PlayerInput(DirectObject):
 	if base.win.movePointer(0, self.winXhalf, self.winYhalf): 
 		self.player.setH(self.player, (x - self.winXhalf)*-0.1) 
 		base.camera.setP( clampScalar(-90,90, base.camera.getP() - (y - self.winYhalf)*0.1) ) 
-		
+	
+	'''
 	# Move the player if the keys are pressed 
 	# Forward.
 	if (self.controlMap["forward"] != 0):
@@ -201,6 +206,6 @@ class PlayerInput(DirectObject):
 	# Jump
 	if (self.controlMap["jump"] != 0):
 	    self.jump(dt)
-                
+	'''
                          
 	return task.cont         
