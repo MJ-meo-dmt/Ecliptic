@@ -37,7 +37,7 @@ class World(DirectObject):
 		plight = PointLight('plight')
 		plight.setColor(VBase4(0.7, 0.7, 0.7, 1))
 		plnp = render.attachNewNode(plight)
-		plnp.setPos(0, 0, 5)
+		plnp.setPos(0, 0, 8)
 		render.setLight(plnp)
 		
 	def addLevel(self, levelName, levelObject):
