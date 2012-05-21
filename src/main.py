@@ -90,7 +90,7 @@ class Main(ShowBase):
 	def init_input(self):
 		
 		# Setup the controls
-		self.playerControl = PlayerInput(self)
+		self.playerControl = PlayerInput()
 		
 		
 		
