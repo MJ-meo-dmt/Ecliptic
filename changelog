@@ -8,5 +8,6 @@ Version 0.0.01
 17/05/2012
 > MJ-meo-dmt
 
-- Added bullet physics, note that the camera and player(body) needs to be lined-up :P
+- Added bullet physics, works with movement and camera view.  Only crouch needs work.
 - Looks like the collisions.py won't be needed anymore, but I'll keep it for incase, we need some thing.
+- Started with picking up objects, so far no good.
