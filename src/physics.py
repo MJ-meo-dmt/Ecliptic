@@ -50,7 +50,7 @@ class Physics(DirectObject):
 	
 	# World
 	self.world = BulletWorld()
-	self.world.setGravity(Vec3(0, 0, -9.81))
+	self.world.setGravity(Vec3(0, 0, worldGravity))
 	
 	# Add the simulation method to the taskmgr
 	taskMgr.add(self.update, 'update')
@@ -90,8 +90,14 @@ class Physics(DirectObject):
 	self.box = ''
 	self.hinge = ''
 	self.pickTest = False
+	
+	# test the class test
+	self.test = MakeObject(self, 'Box1', 'b', 1.0)
+	
 	self.accept('e', self.playerPickup)
 	self.setup_world()
+	
+	
 	
     
     # Handle player jumping
@@ -155,24 +161,25 @@ class Physics(DirectObject):
 	##############################################
 	##############################################
 	
-	# Box A
-	shape = BulletBoxShape(Vec3(0.5, 0.5, 0.5))
-
-	bodyA = BulletRigidBodyNode('Box A')
-	bodyNP = self.worldNP.attachNewNode(bodyA)
-	bodyNP.node().addShape(shape)
-	bodyNP.node().setMass(0.4)
-	bodyNP.node().setDeactivationEnabled(False)
-	bodyNP.setCollideMask(BitMask32.allOn())
-	bodyNP.setPos(-4, -5, 3)
+	### Setup model = collision model from egg file. ###
+	# Collision model #
+	colmodel = loader.loadModel('../assets/models/hallway.col.egg') # load model 
 	
-	visNP = loader.loadModel('../assets/models/box.egg')
-	visNP.setScale(0.5, 0.5, 0.5)
-	visNP.clearModelNodes()
-	visNP.reparentTo(bodyNP)
+	solids_collection = BulletHelper.fromCollisionSolids(colmodel); # retrieve all solids found in the .egg file
 	
-	self.box = bodyNP
-	self.world.attachRigidBody(bodyA)
+	solid_main = render.attachNewNode('conteneur solides') # master node containing all our solids
+	for solid in solids_collection: # for each solid found in solids collection
+	    solid.node().setMass(0.0) # set zero mass / not affected by gravity
+	    solid.node().setKinematic(True)
+	    #solid.setCollideMask(BitMask32.allOn())
+	    self.world.attachRigidBody(solid.node()) # attach solid to bullet world
+	    solid.reparentTo(solid_main) # parent solid to master node
+	
+	# Display model #
+	vismodel = loader.loadModel('../assets/models/hallway.1.egg') # visual model
+	vismodel.reparentTo(render)
+	
+	
     
     # Setup the player physics
     def setup_player(self):
@@ -204,25 +211,28 @@ class Physics(DirectObject):
 	# Although I found something in the manual that I want to try.
     def playerPickup(self):
 	
+	# Write a class for pick able objects so that we instance the object in the world and if picked up we change that instance or del it then create new one, then same again when dropped
+	
+	
 	bodyA = base.camera
-	bodyB = self.box
 	
-	grab = bodyA.attachNewNode('grab')
-	grab.setPos(0, 2, 1)
-	
-	print bodyA
 	
 	if self.pickTest == False:
-	    bodyB.reparentTo(bodyA)
-	    bodyB.setPos(0, 2, 0)
-	    bodyB.node().setMass(0.0)
+	    self.test.bodyNP.wrtReparentTo(bodyA)
+	    #self.test.bodyNP.copyTo(bodyA)
+	    #self.test.worldNP
+	    #bodyB.setPos(0, 2, 0)
+	    self.test.bodyNP.node().setMass(0.0)
+	    #self.test.bodyNP.setScale(1)
+	    self.test.bodyNP.setCollideMask(BitMask32.allOff())
 	    self.pickTest = True
 	    
 	    
 	elif self.pickTest == True:
-	    bodyPos = bodyA.getPos() + 1
-	    bodyB.reparentTo(self.worldNP)
-	    bodyB.setPos(bodyPos)
+	    self.test.bodyNP.wrtReparentTo(self.worldNP)
+	    self.test.bodyNP.node().setMass(1.0)
+	    self.test.bodyNP.setCollideMask(BitMask32.allOn())
+	   #bodyB.setPos(bodyPos)
 	    self.pickTest = False
 	
     # Simulate Physics
@@ -250,8 +260,71 @@ class Physics(DirectObject):
 	self.world.setDebugNode(self.debugNP.node())
     
     
+class MakeObject(object):
     
+    """
+    MakeObject Class:
     
+    Handles the creation for moveable objects in the physics world, also these will be objects
+    the player could pick up, depending on mass (have to make check for this inside the picker method)
+    
+    @param w: self from Physics Class inorder to use things from it
+    @param name: Object name
+    @param shapeCheck: The type of shape to be use for the object, 'b' = BoxShape, 's' = SphereShape
+    @param sx: shape x Vec3, scale = 0.5 default
+    @param sy: shape y Vec3, scale = 0.5 default
+    @param sz: shape z Vec3, scale = 0.5 default
+    @param sr: shape radius for spheres = 3 default
+    
+    """
+    
+    def __init__(self, w, name, shapeCheck, mass=0.0, sx=0.5, sy=0.5, sz=0.5, sr=3):
+	"""
+	Constructor:
+	
+	"""
+	# This is self, from the instance under Physics class
+	self.mainWorld = w
+	
+	# Give the object a name
+	self.name = name
+	self.mass = mass
+	
+	# This is param settin 'b' = BoxShape, 's' = SphereShape
+	self.shapeCheck = shapeCheck
+	# Keeper for the final choice on shape
+	self.makeShape = ''
+	
+	# Types of shapes
+	boxShape = BulletBoxShape(Vec3(sx, sy, sz))
+	sphereShape = BulletSphereShape(sr)
+	
+	if shapeCheck == 'b':
+	    self.makeShape = boxShape
+	    
+	
+	# Sphere shapes don't seem to work now... :P how cares...
+	elif shapeCheck == 's':
+	    self.makeShape = sphereShape
+	
+	
+	# Create the body
+	self.body = BulletRigidBodyNode(self.name)
+	self.bodyNP = self.mainWorld.worldNP.attachNewNode(self.body)
+	self.bodyNP.node().addShape(self.makeShape)
+	self.bodyNP.node().setMass(mass)
+	self.bodyNP.node().setDeactivationEnabled(False)
+	self.bodyNP.setCollideMask(BitMask32.allOn())
+	self.bodyNP.setPos(0, 0, 0)
+
+	# Add a visual to the solid body
+	visNP = loader.loadModel('../assets/models/box.egg')
+	#visNP.setScale(0.5, 0.5, 0.5)
+	visNP.clearModelNodes()
+	visNP.reparentTo(self.bodyNP)
+	
+	# Finally add this object to the mainPhysics world
+	self.mainWorld.world.attachRigidBody(self.body)
     
     
     
