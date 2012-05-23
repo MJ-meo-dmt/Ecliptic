@@ -77,36 +77,7 @@ class MakePlayer(Player):
 	# Setup the spawn position
 	self.entityPlayer.setPos(0, 0, 0)
 	
-	#> Setup collision solids for the PC - Player
-	'''
-	# collision bits for player
-	self.groundCollBit = BitMask32.bit(0) 
-	self.collBitOff = BitMask32.allOff()
 	
-	# This way seem to bug out.
-	#playerCollision = self.entityPlayer.attachCollisionSphere('PCsphere', 0,0,1, .4, self.groundCollBit, self.collBitOff)
-	
-	# Collision Sphere for player: cx, cy, cz, r
-	self.playerColl = CollisionSphere(0, 0, 1, .4)
-        self.playercollNode = CollisionNode('PCsphere')
-        self.playercollNode.addSolid(self.playerColl)
-        self.playercollNode.setFromCollideMask(self.groundCollBit)
-        self.playercollNode.setIntoCollideMask(self.collBitOff)
-        self.playercollNodePath = self.entityPlayer.attachNewNode(self.playercollNode)  # THis goes to self.playerPusher as playerCollision
-	
-	# This way seem to bug out.
-	#self.playerGroundColNp = self.entityPlayer.attachCollisionRay( 'PCRay', 
-	#							0,0,.6, 0,0,-1, 
-	#				    self.groundCollBit, self.collBitOff) 
-	
-	# Collision Ray for player: ox, oy, oz, dx, dy, dz
-	self.playerCollRay = CollisionRay(0, 0, .6, 0, 0, -1)
-        self.playercollNodeRay = CollisionNode('PCRay')
-        self.playercollNodeRay.addSolid(self.playerCollRay)
-        self.playercollNodeRay.setFromCollideMask(self.groundCollBit)
-        self.playercollNodeRay.setIntoCollideMask(self.collBitOff)
-        self.playercollNodePathRay = self.entityPlayer.attachNewNode(self.playercollNodeRay)
-	'''
 ## Player Input Class
 class PlayerInput(DirectObject):
         

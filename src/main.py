@@ -65,12 +65,12 @@ class Main(ShowBase):
 		
 		self.WorldClass = World()
 		
-		self.level1 = MakeLevel('level', "../assets/models/stage1")
-		self.testWall = MakeLevel('wall', "../assets/models/wall")
+		#self.level1 = MakeLevel('level', "../assets/models/stage1")
+		#self.testWall = MakeLevel('wall', "../assets/models/wall")
 		
-		self.WorldClass.addLevel('Level', self.level1)
-		self.WorldClass.addLevel('Wall', self.testWall)
-		LEVELS['Wall'].dummylevel.setTwoSided(True)
+		#self.WorldClass.addLevel('Level', self.level1)
+		#self.WorldClass.addLevel('Wall', self.testWall)
+		#LEVELS['Wall'].dummylevel.setTwoSided(True)
 		
 		
 	def init_player(self):
