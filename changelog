@@ -11,3 +11,14 @@ Version 0.0.01
 - Added bullet physics, works with movement and camera view.  Only crouch needs work.
 - Looks like the collisions.py won't be needed anymore, but I'll keep it for incase, we need some thing.
 - Started with picking up objects, so far no good.
+
+28/05/2012
+> MJ-meo-dmt
+
+- Added alot of changes.
+- New egg parser added, also game_prop.py for the base classes to handle the creation of items via parser.
+- Cleaned up code[still not 100%]
+- Moved code around, like player bullet setup.  Moved to Player.py instead of physics.py
+- Removed old Collisions.py
+- Picking objects still needs work, since if player is to0-close to object [PC] gets pushed backwards.
+- Parser and object setup need tweaking for detailed setups. like Bullet setup(mass, shape...)
