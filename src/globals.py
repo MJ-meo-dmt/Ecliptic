@@ -6,6 +6,8 @@
 
 #######################################################################
 
+# Numbers of things
+
 # Keeps levels
 LEVELS = {}
 
@@ -14,4 +16,10 @@ ENTITY = {}
 
 # Keeps Stations (May move levels into this one? not sure yet.)
 STATIONS = {}
+
+# Keeps all objects found in egg files with instance to class
+OBJECTS = {}
+
+
+
 
