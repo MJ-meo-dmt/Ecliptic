@@ -1,0 +1,230 @@
+<CoordinateSystem> { Z-Up }
+
+<Comment> {
+  "egg-trans -tbnall -o /home/mj-meo-dmt/Projects/comp-rpg/Ecliptic/assets/models/testBox.egg /home/mj-meo-dmt/Projects/comp-rpg/Ecliptic/assets/models/testBox.egg"
+}
+<Material> Material {
+  <Scalar> diffr { 0.64 }
+  <Scalar> diffg { 0.64 }
+  <Scalar> diffb { 0.64 }
+  <Scalar> emitr { 0 }
+  <Scalar> emitg { 0 }
+  <Scalar> emitb { 0 }
+  <Scalar> specr { 0.5 }
+  <Scalar> specg { 0.5 }
+  <Scalar> specb { 0.5 }
+  <Scalar> shininess { 12.5 }
+}
+<Group> box3 {
+  <Transform> {
+    <Matrix4> {
+      1 0 0 0
+      0 1 0 0
+      0 0 1 0
+      0 -3.413 3.262 1
+    }
+  }
+  <Tag> DOOR {
+    Door1
+  }
+  <Tag> STATUS {
+    True
+  }
+  <VertexPool> box3 {
+    <Vertex> 0 {
+      1 -2.413 2.262
+    }
+    <Vertex> 1 {
+      1 -4.413 2.262
+    }
+    <Vertex> 2 {
+      -1 -4.413 2.262
+    }
+    <Vertex> 3 {
+      -1 -2.413 2.262
+    }
+    <Vertex> 4 {
+      1 -2.413 4.262
+    }
+    <Vertex> 5 {
+      -1 -2.413 4.262
+    }
+    <Vertex> 6 {
+      -1 -4.413 4.262
+    }
+    <Vertex> 7 {
+      1 -4.413 4.262
+    }
+  }
+  <Polygon> {
+    <Normal> { 0 0 -1 }
+    <MRef> { Material }
+    <VertexRef> { 0 1 2 3 <Ref> { box3 } }
+  }
+  <Polygon> {
+    <Normal> { 0 0 1 }
+    <MRef> { Material }
+    <VertexRef> { 4 5 6 7 <Ref> { box3 } }
+  }
+  <Polygon> {
+    <Normal> { 1 0 0 }
+    <MRef> { Material }
+    <VertexRef> { 0 4 7 1 <Ref> { box3 } }
+  }
+  <Polygon> {
+    <Normal> { 0 -1 0 }
+    <MRef> { Material }
+    <VertexRef> { 1 7 6 2 <Ref> { box3 } }
+  }
+  <Polygon> {
+    <Normal> { -1 0 0 }
+    <MRef> { Material }
+    <VertexRef> { 2 6 5 3 <Ref> { box3 } }
+  }
+  <Polygon> {
+    <Normal> { 0 1 0 }
+    <MRef> { Material }
+    <VertexRef> { 4 0 3 5 <Ref> { box3 } }
+  }
+}
+<Group> box2 {
+  <Transform> {
+    <Matrix4> {
+      1 0 0 0
+      0 1 0 0
+      0 0 1 0
+      0 -3.413 0 1
+    }
+  }
+  <Tag> TRIGGER {
+    Trigger01
+  }
+  <VertexPool> box2 {
+    <Vertex> 0 {
+      1 -2.413 -1
+    }
+    <Vertex> 1 {
+      1 -4.413 -1
+    }
+    <Vertex> 2 {
+      -1 -4.413 -1
+    }
+    <Vertex> 3 {
+      -1 -2.413 -1
+    }
+    <Vertex> 4 {
+      1 -2.413 1
+    }
+    <Vertex> 5 {
+      -1 -2.413 1
+    }
+    <Vertex> 6 {
+      -1 -4.413 1
+    }
+    <Vertex> 7 {
+      1 -4.413 1
+    }
+  }
+  <Polygon> {
+    <Normal> { 0 0 -1 }
+    <MRef> { Material }
+    <VertexRef> { 0 1 2 3 <Ref> { box2 } }
+  }
+  <Polygon> {
+    <Normal> { 0 0 1 }
+    <MRef> { Material }
+    <VertexRef> { 4 5 6 7 <Ref> { box2 } }
+  }
+  <Polygon> {
+    <Normal> { 1 0 0 }
+    <MRef> { Material }
+    <VertexRef> { 0 4 7 1 <Ref> { box2 } }
+  }
+  <Polygon> {
+    <Normal> { 0 -1 0 }
+    <MRef> { Material }
+    <VertexRef> { 1 7 6 2 <Ref> { box2 } }
+  }
+  <Polygon> {
+    <Normal> { -1 0 0 }
+    <MRef> { Material }
+    <VertexRef> { 2 6 5 3 <Ref> { box2 } }
+  }
+  <Polygon> {
+    <Normal> { 0 1 0 }
+    <MRef> { Material }
+    <VertexRef> { 4 0 3 5 <Ref> { box2 } }
+  }
+}
+<Group> box1 {
+  <Transform> {
+    <Matrix4> {
+      1 0 0 0
+      0 1 0 0
+      0 0 1 0
+      0 0 0 1
+    }
+  }
+  <Tag> NEEDS {
+    Trigger01
+  }
+  <Tag> SENSOR {
+    Sensor01
+  }
+  <VertexPool> box1 {
+    <Vertex> 0 {
+      1 1 -1
+    }
+    <Vertex> 1 {
+      1 -1 -1
+    }
+    <Vertex> 2 {
+      -1 -1 -1
+    }
+    <Vertex> 3 {
+      -1 1 -1
+    }
+    <Vertex> 4 {
+      1 1 1
+    }
+    <Vertex> 5 {
+      -1 1 1
+    }
+    <Vertex> 6 {
+      -1 -1 1
+    }
+    <Vertex> 7 {
+      1 -1 1
+    }
+  }
+  <Polygon> {
+    <Normal> { 0 0 -1 }
+    <MRef> { Material }
+    <VertexRef> { 0 1 2 3 <Ref> { box1 } }
+  }
+  <Polygon> {
+    <Normal> { 0 0 1 }
+    <MRef> { Material }
+    <VertexRef> { 4 5 6 7 <Ref> { box1 } }
+  }
+  <Polygon> {
+    <Normal> { 1 0 0 }
+    <MRef> { Material }
+    <VertexRef> { 0 4 7 1 <Ref> { box1 } }
+  }
+  <Polygon> {
+    <Normal> { 0 -1 0 }
+    <MRef> { Material }
+    <VertexRef> { 1 7 6 2 <Ref> { box1 } }
+  }
+  <Polygon> {
+    <Normal> { -1 0 0 }
+    <MRef> { Material }
+    <VertexRef> { 2 6 5 3 <Ref> { box1 } }
+  }
+  <Polygon> {
+    <Normal> { 0 1 0 }
+    <MRef> { Material }
+    <VertexRef> { 4 0 3 5 <Ref> { box1 } }
+  }
+}
