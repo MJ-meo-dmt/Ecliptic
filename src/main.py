@@ -19,6 +19,17 @@ import sys
 import os
 
 # Panda Engine imports
+from pandac.PandaModules import loadPrcFileData
+loadPrcFileData("",
+"""	
+	window-title Ecliptic - Space
+	fullscreen 0
+	win-size 1024 768
+	cursor-hidden 0
+	sync-video 0
+	show-frame-rate-meter 1
+"""
+)
 from direct.showbase.ShowBase import ShowBase
 from pandac.PandaModules import *
 from panda3d.core import WindowProperties, Camera
@@ -49,53 +60,37 @@ class Main(ShowBase):
 		props.setCursorHidden(True) 
 		self.win.requestProperties(props)
 		
+		# Master Instances
+		self.WorldClass = World()
+		self.PhysicsClass = Physics(self, self.WorldClass)
+		self.PlayerClass = Player()
+		
 		# init the main methods
 		self.init_player()
-		#self.init_collisions()
 		self.init_world()
-		self.init_input()
-		self.physics = Physics()
-		
 		
 		# Debug: Show the scene graph.
 		self.render.ls()
 		
+		# Print tests to parse check
+		print "######################################"
+		print "Object Sensor01 needs: ",OBJECTS['Sensor01'].objectNeeds
+		print "Object Trigger01 name: ", OBJECTS['Trigger01'].objectName
+		print "Object Door1 Status: ", OBJECTS['Door1'].objectStatus
+		
 		
 	def init_world(self):
 		
-		self.WorldClass = World()
-		
-		#self.level1 = MakeLevel('level', "../assets/models/stage1")
-		#self.testWall = MakeLevel('wall', "../assets/models/wall")
-		
-		#self.WorldClass.addLevel('Level', self.level1)
-		#self.WorldClass.addLevel('Wall', self.testWall)
-		#LEVELS['Wall'].dummylevel.setTwoSided(True)
+		self.level1 = MakeLevel(self, self.WorldClass, "Level1", "../assets/models/testBox.egg")
 		
 		
 	def init_player(self):
-		
-		## Make the actor and add it to the entity dict.
-		self.PlayerClass = Player()
-		
-		self.playerPC = MakePlayer("PC_Player")
+
+		self.playerPC = MakePlayer(self, self.PhysicsClass, self.WorldClass, 'Player')
 		
 		self.PlayerClass.addEntity("PC", self.playerPC)
-		
-	def init_collisions(self):
 	    
-		# Setup collisions
-		self.CollisionClass = Collisions()
-		
-	def init_input(self):
-		
-		# Setup the controls
-		self.playerControl = PlayerInput()
-		
-		
-		
-	
-	
+
 game = Main()
 game.run()
 
