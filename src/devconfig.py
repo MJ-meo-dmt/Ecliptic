@@ -14,8 +14,8 @@ camFar = 1000
 
 
 # Player settings
-PCSpeed = 4
-mouseSpeed = 3.5
+PCSpeed = 2.0
+mouseSpeed = 4.0
 # Player Physics settings
 # Will add them later since its still a bit crazy in physics.py
 
