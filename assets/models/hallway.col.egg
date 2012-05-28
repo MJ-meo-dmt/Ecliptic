@@ -48,9 +48,6 @@
       0 1.9 2.8 1
     }
   }
-  <Tag> Collision {
-    "Polyset descend"
-  }
   <Collide> wall2 {Polyset descend}
   <VertexPool> wall2 {
     <Vertex> 0 {
@@ -118,9 +115,6 @@
       0 -1.9 2.8 1
     }
   }
-  <Tag> Collision {
-    "Polyset descend"
-  }
   <Collide> wall {Polyset descend}
   <VertexPool> wall {
     <Vertex> 0 {
@@ -187,9 +181,6 @@
       0 0 1 0
       0 0 0 1
     }
-  }
-  <Tag> Collision {
-    "Polyset descend"
   }
   <Collide> Floor {Polyset descend}
   <VertexPool> Floor {
