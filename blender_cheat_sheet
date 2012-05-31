@@ -1,0 +1,59 @@
+### Blender Sheet ###
+
+# Base objects for each object Class
+
+self.objectName = ""                    - STRING
+self.objectType = ""			- STRING
+self.objectTriggers = ""		- STRING
+self.objectArea = ""			- STRING/INT
+self.objectPickable = ""		- STRING/BOOL
+self.objectNeeds = ""			- STRING
+self.objectStatus = False		- BOOL
+self.objectSoundON = ""			- STRING
+self.objectSoundOFF = ""		- STRING
+self.objectStyle = ""			- STRING
+self.objectPhysics = 0.0		- FLOAT
+self.objectParent = ""			- STRING
+self.objectPosition = Point3(0, 0, 0)	- POINT3
+self.objectHpr = VBase3(0, 0, 0)	- VBase3
+self.objectScale = VBase3(0, 0, 0) 	- VBase3
+
+## TAGS ##
+
+# MAIN TAGS FOR PARSER #
+#------#
+# These two are not forsure yet, since I have to find some way to set it up.
+FLOOR 					- Floor_Name
+WALL					- Wall_Name
+#------#
+SENSOR					- Sensor_Name/Number  # Used for lights, and other moments
+DOOR					- Door_Name/Number # Place holder for DYNAMIC DOOR objects
+PLAYER					- Player_Spawn(This would be the spawn point)
+TRIGGER					- Trigger_Name/Number # Used for things the player interact with, switch, buttons stuff
+LIGHT					- Light_Name/Number # Any lights
+ITEM					- Item_Name/Number # Any items: These if pickable would be in seperate egg files. like DOOR's
+SCREEN					- Screen_Name/Number
+PARTICLES				- Particle_Name/Number # Places particles may spawn
+SUIT					- Suit_Name(This would be for something todo with the suit)
+DECOR					- Decor_Name/Number 
+
+# SUB TAGS #
+# These get used under the created object(class) and then stored in DICT
+NAME 					- From First Tag# This is the getTag from the MAIN Tag.  Say SENSOR = Sensor0 which then gets used as the Name
+TYPE					- STATIC / DYNAMIC / GHOST 
+TRIGGERS				- "triggers" = # The object this object TRIGGERS: Light01
+AREA					- The Area this object is found within: Area0(Ship interior)
+PICKABLE				- True/False: Bool
+NEEDS					- "needs" = # The object or player this object needs before being enabled: Status=True
+STATUS					- True/False = On/Off
+SOUNDON					- The STRING "dir" # Pointing to the sound file for this object's ON sound 
+SOUNDOFF				- The STRING "dir" # Pointing to the sound file for this object's OFF sound - If no OFF sound avail leave blank 
+STYLE					- The STRING "name" for the style found in the STYLE_File.something
+PHYSICS					- float = 0.0 to =mass for the object.
+PARENT					- The parent this object belongs to.
+
+# Object specifics: Lights
+RED					- The "red" color: 0.0 -> 1.0
+GREEN					- The "green" color: 0.0 -> 1.0
+BLUE					- The "blue" color: 0.0 -> 1.0
+POWER					- The "power" 0.0 -> 1.0
