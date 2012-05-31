@@ -42,10 +42,14 @@ class World(DirectObject):
 		
 		# Keeps all geoms under this node: Game_Objects
 		self.master_GeomNP = render.attachNewNode('MASTER_GEOM')
+		# Keeps all Collision solids: Bullet shapes
+		self.master_ColNP = render.attachNewNode('MASTER_COL')
 		# Keeps all Lights under this node
 		self.master_LightNP = render.attachNewNode('MASTER_LIGHTS')
 		
 		# subnodes for Game_Objects
+		self.floorNP = self.master_GeomNP.attachNewNode('FLOORS')
+		self.wallNP = self.master_GeomNP.attachNewNode('WALLS')
 		self.sensorNP = self.master_GeomNP.attachNewNode('SENSORS')
 		self.doorNP = self.master_GeomNP.attachNewNode('DOORS')
 		self.playerNP = self.master_GeomNP.attachNewNode('PLAYER')
@@ -83,7 +87,7 @@ class MakeLevel():
 	Handles the creation of levels.
 	"""
 	
-	def __init__(self, _base, _world, levelName, levelModelPath):
+	def __init__(self, _base, _physics, _world, levelName, levelModelPath):
 		"""
 		constructor:
 		
@@ -92,6 +96,9 @@ class MakeLevel():
 		"""
 		# Base Class
 		self._base = _base
+		
+		# Base Physics
+		self._physics = _physics
 		
 		# Base World
 		self._world = _world
@@ -103,7 +110,7 @@ class MakeLevel():
 		self.level = loader.loadModel(levelModelPath)
 		
 		# Parse the egg model file and setup the level
-		Parse(self._base, self._world, self.level)
+		Parse(self._base, self._physics, self._world, self.level)
 		
 		
 		

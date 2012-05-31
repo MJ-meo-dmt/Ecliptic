@@ -72,16 +72,12 @@ class Main(ShowBase):
 		# Debug: Show the scene graph.
 		self.render.ls()
 		
-		# Print tests to parse check
-		print "######################################"
-		print "Object Sensor01 needs: ",OBJECTS['Sensor01'].objectNeeds
-		print "Object Trigger01 name: ", OBJECTS['Trigger01'].objectName
-		print "Object Door1 Status: ", OBJECTS['Door1'].objectStatus
+		
 		
 		
 	def init_world(self):
 		
-		self.level1 = MakeLevel(self, self.WorldClass, "Level1", "../assets/models/testBox.egg")
+		self.level1 = MakeLevel(self, self.PhysicsClass, self.WorldClass, "Level1", "../assets/models/Room.egg")
 		
 		
 	def init_player(self):

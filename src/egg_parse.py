@@ -18,10 +18,25 @@ from gameprop import *
 # Main egg parser.
 
 class Parse():
+    """
+    Parse Class:
     
-    def __init__(self, _base, _world, _model):
+    Handles the parsing of egg files.
+    Sorts each object/Node found into a specific object/Type
+    
+    Constructor:
+    @param _base: Main base class
+    @param _physics: Main physics class 
+    @param _world: Main world class
+    @param _model: The egg file to be parsed, send from world.py under MakeLevel.
+    """
+    
+    def __init__(self, _base, _physics, _world, _model):
 	# Base class
 	self._base = _base
+	
+	# Base Physics
+	self._physics = _physics
 	
 	# Base world
 	self._world = _world
@@ -43,42 +58,59 @@ class Parse():
 	
 	# Now check all objects and then init the class for that tag:
 	for object in self.objects:
+	    """
+	    @param [key]: The name of the object.
+	    """
+	    # -------------------------------------------------------------------------------------------#
+	    #  LEVEL SETUP
+	    #
+	    # Floor and wall is the only two with extra tag's <Collide> {Polyset keep Descend}
+	    #
+	    if object.hasTag('FLOOR'):
+		OBJECTS[object.getTag('FLOOR')] = FLOOR(self._physics, self._world, self.model, object)
+		
+	    if object.hasTag('WALL'):
+		OBJECTS[object.getTag('WALL')] = WALL(self._physics, self._world, self.model, object)
 	    
+	    
+	    # -------------------------------------------------------------------------------------------#
+	    #  GAME OBJECTS / LOGIC
+	    #
 	    if object.hasTag('SENSOR'):
-		OBJECTS[object.getTag('SENSOR')] = SENSOR(self._world, self.model, object)
+		OBJECTS[object.getTag('SENSOR')] = SENSOR(self._physics, self._world, self.model, object)
 		num_sensors += 1
 		
 	    if object.hasTag('DOOR'):
-		OBJECTS[object.getTag('DOOR')] = DOOR(self._world, self.model, object)
+		OBJECTS[object.getTag('DOOR')] = DOOR(self._physics, self._world, self.model, object)
 		num_doors += 1
 		
 	    if object.hasTag('PLAYER'):
-		OBJECTS[object.getTag('PLAYER')] = PLAYER(self._world, self.model, object)
+		OBJECTS[object.getTag('PLAYER')] = PLAYER(self._physics, self._world, self.model, object)
 		
 	    if object.hasTag('TRIGGER'):
-		OBJECTS[object.getTag('TRIGGER')] = TRIGGER(self._world, self.model, object)
+		OBJECTS[object.getTag('TRIGGER')] = TRIGGER(self._physics, self._world, self.model, object)
 		num_triggers += 1
 		
 	    if object.hasTag('LIGHT'):
-		OBJECTS[object.getTag('LIGHT')] = LIGHT(self._world, self.model, object)
+		OBJECTS[object.getTag('LIGHT')] = LIGHT(self._physics, self._world, self.model, object)
 		num_lights += 1
 		
 	    if object.hasTag('ITEM'):
-		OBJECTS[object.getTag('ITEM')] = ITEM(self._world, self.model, object)
+		OBJECTS[object.getTag('ITEM')] = ITEM(self._physics, self._world, self.model, object)
 		num_items += 1
 		
 	    if object.hasTag('SCREEN'):
-		OBJECTS[object.getTag('SCREEN')] = SCREEN(self._world, self.model, object)
+		OBJECTS[object.getTag('SCREEN')] = SCREEN(self._physics, self._world, self.model, object)
 		
 	    if object.hasTag('PARTICLES'):
-		OBJECTS[object.getTag('PARTICLES')] = PARTICLES(self._world, self.model, object)
+		OBJECTS[object.getTag('PARTICLES')] = PARTICLES(self._physics, self._world, self.model, object)
 		num_particles += 1
 		
 	    if object.hasTag('SUIT'):
-		OBJECTS[object.getTag('SUIT')] = SUIT(self._world, self.model, object)
+		OBJECTS[object.getTag('SUIT')] = SUIT(self._physics, self._world, self.model, object)
 		
 	    if object.hasTag('DECOR'):
-		OBJECTS[object.getTag('DECOR')] = DECOR(self._world, self.model, object)
+		OBJECTS[object.getTag('DECOR')] = DECOR(self._physics, self._world, self.model, object)
 		
 		
 		

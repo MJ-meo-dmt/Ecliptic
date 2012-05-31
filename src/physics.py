@@ -68,9 +68,18 @@ class Physics(DirectObject):
 	self.sensor = ''
 	
 	# test the class test
-	self.test = MakeObject(self, 'Box1', 'b', 1.0)
+	self.test = MakeObject(self, 'Box1', 'b', 20.0)
+	
+	pos = 1
+	
+	#for x in range(5):
+	    #x = MakeObject(self, 'box', 'b', 5.0)
+	    #pos += 1
+	    #x.bodyNP.setPos(0, 0, pos)
+	
 	
 	self.accept('e', self.playerPickup)
+	self.accept('f1', self.showDebug)
 	self.setup_world()
 	#taskMgr.add(self.checkGhost, 'checkGhost')
 
@@ -82,6 +91,8 @@ class Physics(DirectObject):
 	##
 	##  GROUND FOR TESTING 
 	#############################################
+	
+	
 	
 	# Ground
 	shape = BulletPlaneShape(Vec3(0, 0, 1), 0)
@@ -95,19 +106,22 @@ class Physics(DirectObject):
 	
 	##############################################
 	##############################################
-	
+	'''
 	### Setup model = collision model from egg file. ###
 	# Collision model #
-	colmodel = loader.loadModel('../assets/models/hallway.col.egg') # load model 
+	 # load model 
+	colmodel = loader.loadModel('../assets/models/hallway.1.egg')
 	
 	solids_collection = BulletHelper.fromCollisionSolids(colmodel); # retrieve all solids found in the .egg file
 	
 	solid_main = render.attachNewNode('conteneur solides') # master node containing all our solids
+	solid_main.reparentTo(render)
 	#solid_main.setPos(0, 0, 0)
 	for solid in solids_collection: # for each solid found in solids collection
 	
 	    print solid
 	    
+	    # I could use this setup for FLOOR and WALL tag setup under parser
 	    solid.node().setMass(0.0) # set zero mass / not affected by gravity
 	    #solid.node().setKinematic(True)
 	    solid.setCollideMask(BitMask32.allOn())
@@ -115,9 +129,10 @@ class Physics(DirectObject):
 	    solid.reparentTo(solid_main) # parent solid to master node
 	
 	# Display model #
-	vismodel = loader.loadModel('../assets/models/hallway.1.egg') # visual model
-	vismodel.reparentTo(render)
+	#vismodel = loader.loadModel('../assets/models/hallway.1.egg') # visual model
+	#vismodel.reparentTo(render)
 	#vismodel.setPos(0, 0, 0)
+	
 	
 	gshape = BulletBoxShape(Vec3(0.2, 0.2, 0.2))
 	
@@ -130,7 +145,7 @@ class Physics(DirectObject):
 	self.sensor = ghostNP
 	
 	self.world.attachGhost(ghost)
-	
+	'''
     def checkGhost(self, task):
 	ghost = self.sensor.node()
 	print ghost.getNumOverlappingNodes()
@@ -140,11 +155,10 @@ class Physics(DirectObject):
 	return task.cont
 	
   
-	## This isn't working so great.  Since I tried it with hingeConstraint but thats only between two rigid bodies.
-	# Although I found something in the manual that I want to try.
+	
 	
 	########################
-	# NOT WORKING WILL FIX #
+	# FIXED :D
 	########################
     def playerPickup(self):
 	
@@ -161,14 +175,14 @@ class Physics(DirectObject):
 	    #bodyB.setPos(0, 2, 0)
 	    self.test.bodyNP.node().setMass(0.0)
 	    #self.test.bodyNP.setScale(1)
-	    self.test.bodyNP.setCollideMask(BitMask32.allOff())
+	    #self.test.bodyNP.setCollideMask(BitMask32.allOff())
 	    self.pickTest = True
 	    
 	    
 	elif self.pickTest == True:
 	    self.test.bodyNP.wrtReparentTo(self.worldNP)
-	    self.test.bodyNP.node().setMass(1.0)
-	    self.test.bodyNP.setCollideMask(BitMask32.allOn())
+	    self.test.bodyNP.node().setMass(20.0)
+	    #self.test.bodyNP.setCollideMask(BitMask32.allOn())
 	   #bodyB.setPos(bodyPos)
 	    self.pickTest = False
 	
