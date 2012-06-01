@@ -13,6 +13,7 @@ self.objectSoundON = ""			- STRING
 self.objectSoundOFF = ""		- STRING
 self.objectStyle = ""			- STRING
 self.objectPhysics = 0.0		- FLOAT
+self.objectBitMask = ""			- Hex/Int/String
 self.objectParent = ""			- STRING
 self.objectPosition = Point3(0, 0, 0)	- POINT3
 self.objectHpr = VBase3(0, 0, 0)	- VBase3
@@ -22,7 +23,7 @@ self.objectScale = VBase3(0, 0, 0) 	- VBase3
 
 # MAIN TAGS FOR PARSER #
 #------#
-# These two are not forsure yet, since I have to find some way to set it up.
+# THESE TWO ARE VERY DEPENDED ON APPLYING 'loc+rot+scale' IN BLENDER
 FLOOR 					- Floor_Name
 WALL					- Wall_Name
 #------#
@@ -31,7 +32,7 @@ DOOR					- Door_Name/Number # Place holder for DYNAMIC DOOR objects
 PLAYER					- Player_Spawn(This would be the spawn point)
 TRIGGER					- Trigger_Name/Number # Used for things the player interact with, switch, buttons stuff
 LIGHT					- Light_Name/Number # Any lights
-ITEM					- Item_Name/Number # Any items: These if pickable would be in seperate egg files. like DOOR's
+ITEM					- Item_Name/Number # Any items: These if pickable would be in seperate egg files.
 SCREEN					- Screen_Name/Number
 PARTICLES				- Particle_Name/Number # Places particles may spawn
 SUIT					- Suit_Name(This would be for something todo with the suit)
@@ -39,6 +40,10 @@ DECOR					- Decor_Name/Number
 
 # SUB TAGS #
 # These get used under the created object(class) and then stored in DICT
+
+# FLOOR AND WALL SPECIFICS
+Collide 				- Polyset keep Descend
+# --------#
 NAME 					- From First Tag# This is the getTag from the MAIN Tag.  Say SENSOR = Sensor0 which then gets used as the Name
 TYPE					- STATIC / DYNAMIC / GHOST 
 TRIGGERS				- "triggers" = # The object this object TRIGGERS: Light01
@@ -50,6 +55,7 @@ SOUNDON					- The STRING "dir" # Pointing to the sound file for this object's ON
 SOUNDOFF				- The STRING "dir" # Pointing to the sound file for this object's OFF sound - If no OFF sound avail leave blank 
 STYLE					- The STRING "name" for the style found in the STYLE_File.something
 PHYSICS					- float = 0.0 to =mass for the object.
+BITMASK					- 0x0  : Hex
 PARENT					- The parent this object belongs to.
 
 # Object specifics: Lights

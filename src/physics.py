@@ -69,6 +69,8 @@ class Physics(DirectObject):
 	
 	# test the class test
 	self.test = MakeObject(self, 'Box1', 'b', 20.0)
+	self.test.bodyNP.setPos(0, 1, 1)
+	print self.test.body.getGravity()
 	
 	pos = 1
 	
@@ -92,60 +94,20 @@ class Physics(DirectObject):
 	##  GROUND FOR TESTING 
 	#############################################
 	
-	
-	
 	# Ground
 	shape = BulletPlaneShape(Vec3(0, 0, 1), 0)
 
-	np = self.worldNP.attachNewNode(BulletRigidBodyNode('Ground'))
-	np.node().addShape(shape)
-	np.setPos(0, 0, 0)
-	np.setCollideMask(BitMask32.allOn())
+	#np = self.worldNP.attachNewNode(BulletRigidBodyNode('Ground'))
+	#np.node().addShape(shape)
+	#np.setPos(0, 0, 0)
+	#np.setCollideMask(BitMask32.allOn())
 
-	self.world.attachRigidBody(np.node())
+	#self.world.attachRigidBody(np.node())
 	
 	##############################################
 	##############################################
-	'''
-	### Setup model = collision model from egg file. ###
-	# Collision model #
-	 # load model 
-	colmodel = loader.loadModel('../assets/models/hallway.1.egg')
-	
-	solids_collection = BulletHelper.fromCollisionSolids(colmodel); # retrieve all solids found in the .egg file
-	
-	solid_main = render.attachNewNode('conteneur solides') # master node containing all our solids
-	solid_main.reparentTo(render)
-	#solid_main.setPos(0, 0, 0)
-	for solid in solids_collection: # for each solid found in solids collection
-	
-	    print solid
-	    
-	    # I could use this setup for FLOOR and WALL tag setup under parser
-	    solid.node().setMass(0.0) # set zero mass / not affected by gravity
-	    #solid.node().setKinematic(True)
-	    solid.setCollideMask(BitMask32.allOn())
-	    self.world.attachRigidBody(solid.node()) # attach solid to bullet world
-	    solid.reparentTo(solid_main) # parent solid to master node
-	
-	# Display model #
-	#vismodel = loader.loadModel('../assets/models/hallway.1.egg') # visual model
-	#vismodel.reparentTo(render)
-	#vismodel.setPos(0, 0, 0)
 	
 	
-	gshape = BulletBoxShape(Vec3(0.2, 0.2, 0.2))
-	
-	ghost = BulletGhostNode('Ghost')
-	ghost.addShape(shape)
-	ghostNP = render.attachNewNode(ghost)
-	ghostNP.setPos(0, 0, 1)
-	ghostNP.setCollideMask(BitMask32(0x0f))
-	
-	self.sensor = ghostNP
-	
-	self.world.attachGhost(ghost)
-	'''
     def checkGhost(self, task):
 	ghost = self.sensor.node()
 	print ghost.getNumOverlappingNodes()
@@ -154,11 +116,9 @@ class Physics(DirectObject):
 	
 	return task.cont
 	
-  
-	
 	
 	########################
-	# FIXED :D
+	# FIXED :D  - Still simple atm.
 	########################
     def playerPickup(self):
 	
@@ -167,7 +127,7 @@ class Physics(DirectObject):
 	
 	bodyA = base.camera
 	
-	
+	# Will have to make a pick up mask so that it collides with walls and floors and w/e else.. except with the player
 	if self.pickTest == False:
 	    self.test.bodyNP.wrtReparentTo(bodyA)
 	    #self.test.bodyNP.copyTo(bodyA)
@@ -175,7 +135,7 @@ class Physics(DirectObject):
 	    #bodyB.setPos(0, 2, 0)
 	    self.test.bodyNP.node().setMass(0.0)
 	    #self.test.bodyNP.setScale(1)
-	    #self.test.bodyNP.setCollideMask(BitMask32.allOff())
+	    #self.test.bodyNP.setCollideMask(BitMask32.allOn())
 	    self.pickTest = True
 	    
 	    
@@ -265,7 +225,7 @@ class MakeObject(object):
 	self.bodyNP.node().setMass(mass)
 	self.bodyNP.node().setDeactivationEnabled(False)
 	self.bodyNP.setCollideMask(BitMask32.allOn())
-	self.bodyNP.setPos(0, 0, 0)
+	
 
 	# Add a visual to the solid body
 	visNP = loader.loadModel('../assets/models/box.egg')

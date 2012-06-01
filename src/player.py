@@ -114,9 +114,11 @@ class MakePlayer(DirectObject):
 	shape = BulletCapsuleShape(w, h - 2 * w, ZUp)
 
 	self.character = BulletCharacterControllerNode(shape, 0.4, 'Player')
+	
 	self.characterNP = self._world.playerNP.attachNewNode(self.character)
-	self.characterNP.setPos(-4, 0, 1.8) # May need some tweaking
+	self.characterNP.setPos(0, -1, .2) # May need some tweaking
 	self.characterNP.setCollideMask(BitMask32.allOn())
+	
 	
 	# Attach the character to the base _Physics
 	self._physics.world.attachCharacter(self.character)
@@ -128,6 +130,13 @@ class MakePlayer(DirectObject):
 	base.camLens.setFov(camFov) 
 	base.disableMouse()
 	
+	# Player Debug:
+	print ""
+	print "Player Character controller settings: "
+	print ""
+	print "Character Gravity: ", self.character.getGravity()
+	print "Character Max Slope: ",self.character.getMaxSlope()
+	print ""
 	
     # Handle player jumping
     def doJump(self):
@@ -136,12 +145,14 @@ class MakePlayer(DirectObject):
 	self.character.doJump()
     
     
-    # Handle player crouch.
+    # Handle player crouch. <Buged to shit>
     def doCrouch(self):
 	self.crouching = not self.crouching
 	sz = self.crouching and 0.6 or 1.0
-
-	self.characterNP.setScale(Vec3(1, 1, sz))
+	#self.character.getShape().setLocalScale(Vec3(1, 1, sz))
+	
+	self.characterNP.setScale(Vec3(1, 1, sz) * 0.3048)
+	#self.characterNP.setPos(0, 0, -1 * sz)
     
     def mouseLook(self, task):
 	dt = globalClock.getDt()
@@ -152,7 +163,7 @@ class MakePlayer(DirectObject):
 	
 	if base.win.movePointer(0, self.winXhalf, self.winYhalf): 
 		self.omega = (x - self.winXhalf)*-mouseSpeed
-		base.camera.setP( clampScalar(-90,90, base.camera.getP() - (y - self.winYhalf)*0.1) ) 
+		base.camera.setP( clampScalar(-90,90, base.camera.getP() - (y - self.winYhalf)*0.09) ) 
 	self.processInput(dt)
 	return task.cont
     

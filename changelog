@@ -32,3 +32,10 @@ Version 0.0.01
 - Added a little 'cheat sheet' containing the tag usage in blender
 - Note that <Collide> {Polyset keep Descend} Will be used for Walls maybe floors aswell (keep it simple though)
 - Added a Room.egg(test room scale not correct :P) - by Jolein
+
+01/06/2012
+> MJ-meo-dmt
+
+- Added extra <TAG's> : BITMASK.  I think it could be used for the picking of certain objects.
+- Fixed mouse view up/down
+- FLOOR + WALL object classes under game_prop.py are working now.

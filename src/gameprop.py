@@ -38,6 +38,7 @@ class GameObject():
 	self.objectSoundOFF = ""
 	self.objectStyle = ""
 	self.objectPhysics = 0.0
+	self.objectBitMask = ""
 	self.objectParent = ""
 	
 	self.objectPosition = Point3(0, 0, 0)
@@ -60,23 +61,52 @@ class FLOOR(GameObject):
 	self._world = _world
 	
 	# Set the object
-	self.object = object 
+	self.object = object
 	
-	# Set the Physics
-	self.objectPhysics = self.object.getTag('PHYSICS')
+	# Add a object name
+	self.objectName = self.object.getTag('FLOOR')
 	
-	# Ground
-	shape = BulletPlaneShape(Vec3(0, 0, 1), 0)
-
-	np = self._world.master_ColNP.attachNewNode(BulletRigidBodyNode('Floor_Col_Plane'))
-	np.node().addShape(shape)
-	np.setPos(0, 0, 0)
-	np.setCollideMask(BitMask32.allOn())
-
-	self._physics.world.attachRigidBody(np.node())
+	# Set the object Type
+	self.objectType = self.object.getTag('TYPE')
 	
-
-
+	# Set the object Area
+	self.objectArea = self.object.getTag('AREA')
+	
+	# Set the object Style
+	self.objectStyle = self.object.getTag('STYLE')
+	
+	# Set the object physics
+	self.objectPhysics = float(self.object.getTag('PHYSICS'))
+	
+	# Set the object BitMask
+	self.objectBitMask = self.object.getTag('BITMASK')
+	
+	# Set the object parent: In means the object this object belongs too
+	self.objectParent = self.object.getTag('PARENT')
+	
+	# Set the position and rotation
+	self.objectPosition = self.object.getPos(_model)
+	self.objectHpr = self.object.getHpr(_model)
+	
+	# ----------------------------------------- #
+	# Adding the solid shape to the wall #
+	
+	solid_collection = BulletHelper.fromCollisionSolids(self.object)
+	
+	# Search the model for the <collide>
+	for solid in solid_collection:
+	    
+	    solid.node().setMass(self.objectPhysics)
+	    solid.setCollideMask(BitMask32.allOn())
+	    self._physics.world.attachRigidBody(solid.node()) # attach solid to bullet world
+	    solid.reparentTo(self._world.floorNP)
+	
+	# Attach the visual of the object
+	self.object.reparentTo(self._world.floorNP)
+	self.object.setPos(self.objectPosition)
+	self.object.setHpr(self.objectHpr)
+	
+	
 class WALL(GameObject):
     
     def __init__(self, _physics, _world, _model, object):
@@ -106,7 +136,10 @@ class WALL(GameObject):
 	self.objectStyle = self.object.getTag('STYLE')
 	
 	# Set the object physics
-	self.objectPhysics = self.object.getTag('PHYSICS')
+	self.objectPhysics = float(self.object.getTag('PHYSICS'))
+	
+	# Set the object BitMask
+	self.objectBitMask = self.object.getTag('BITMASK')
 	
 	# Set the object parent: In means the object this object belongs too
 	self.objectParent = self.object.getTag('PARENT')
@@ -123,15 +156,12 @@ class WALL(GameObject):
 	# Search the model for the <collide>
 	for solid in solid_collection:
 	    
-	    solid.node().setMass(0.0)
-	    #solid.node().setKinematic(True)
+	    solid.node().setMass(self.objectPhysics)
 	    solid.setCollideMask(BitMask32.allOn())
 	    self._physics.world.attachRigidBody(solid.node()) # attach solid to bullet world
 	    solid.reparentTo(self._world.wallNP)
 	
-	# Here we add something like, if the object is setup,
-	# Parent it to the master NodePath for it
-	
+	# Attach the visual of the object
 	self.object.reparentTo(self._world.wallNP)
 	self.object.setPos(self.objectPosition)
 	self.object.setHpr(self.objectHpr)
