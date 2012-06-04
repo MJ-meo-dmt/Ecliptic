@@ -39,3 +39,9 @@ Version 0.0.01
 - Added extra <TAG's> : BITMASK.  I think it could be used for the picking of certain objects.
 - Fixed mouse view up/down
 - FLOOR + WALL object classes under game_prop.py are working now.
+
+04/06/2012
+> MJ-meo-dmt
+
+- Added some changes to the game_prop.py
+- Added a basic gui_crosshair

@@ -1,4 +1,12 @@
 ###  GAME PROPS - OBJECTS  ###
+"""
+GAME PROPS:
+
+Handles the creation of the objects parsed from the egg_file.
+
+Basically each object class here will set the object up in panda,
+as it were in blender, with all it's properties.
+"""
 
 # System imports
 
@@ -11,9 +19,12 @@ from panda3d.core import BitMask32
 
 
 # Game imports
+from globals import *
 
 
 #----------------------------------------------------------------------#
+
+# This will handle all object setups from the egg file.
 
 
 # Base object class
@@ -38,7 +49,7 @@ class GameObject():
 	self.objectSoundOFF = ""
 	self.objectStyle = ""
 	self.objectPhysics = 0.0
-	self.objectBitMask = ""
+	self.objectBitMask = 0
 	self.objectParent = ""
 	
 	self.objectPosition = Point3(0, 0, 0)
@@ -242,6 +253,9 @@ class DOOR(GameObject):
     def __init__(self, _physics, _world, _model, object):
 	GameObject.__init__(self)
 	
+	# Base Physics
+	self._physics = _physics
+	
 	# Base world
 	self._world = _world
 	
@@ -276,7 +290,10 @@ class DOOR(GameObject):
 	self.objectStyle = self.object.getTag('STYLE')
 	
 	# Set the object physics
-	self.objectPhysics = self.object.getTag('PHYSICS')
+	self.objectPhysics = float(self.object.getTag('PHYSICS'))
+	
+	# Set the object BitMask
+	self.objectBitMask = self.object.getTag('BITMASK')
 	
 	# Set the object parent: In means the object this object belongs too
 	self.objectParent = self.object.getTag('PARENT')
@@ -285,9 +302,33 @@ class DOOR(GameObject):
 	self.objectPosition = self.object.getPos(_model)
 	self.objectHpr = self.object.getHpr(_model)
 	
+	# ----------------------------------------- #
+	# Adding the solid shape to the wall #
+	
+	solid_collection = BulletHelper.fromCollisionSolids(self.object)
+	
+	# Search the model for the <collide>
+	for solid in solid_collection:
+	    
+	    solid.node().setMass(self.objectPhysics)
+	    solid.setCollideMask(BitMask32.allOn())
+	    self._physics.world.attachRigidBody(solid.node()) # attach solid to bullet world
+	    solid.reparentTo(self._world.doorNP)
+	
+	# Set the position and rotation
+	self.objectPosition = self.object.getPos(_model)
+	self.objectHpr = self.object.getHpr(_model)
+	
 	# Parent it to the master NodePath for it
 	
 	self.object.reparentTo(self._world.doorNP)
+	self.object.setPos(self.objectPosition)
+	self.object.setHpr(self.objectHpr)
+	
+	
+	#-------------------------------------------------------------#
+	# Object Functions
+	
 	
 	
 	

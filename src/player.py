@@ -19,6 +19,7 @@ from direct.showbase.InputStateGlobal import inputState
 # Game imports
 from devconfig import *
 from globals import *
+from gui import *
 
 
 #---------------------------------------------------------------------#
@@ -114,6 +115,12 @@ class MakePlayer(DirectObject):
 	shape = BulletCapsuleShape(w, h - 2 * w, ZUp)
 
 	self.character = BulletCharacterControllerNode(shape, 0.4, 'Player')
+	#-------------------------------------------------------------------#
+	# PLAYER GRAVITY SETTINGS AND FALL SPEED #
+	#self.character.setGravity(0.87)
+	#self.character.setFallSpeed(0.3)
+	#
+	#-------------------------------------------------------------------#
 	
 	self.characterNP = self._world.playerNP.attachNewNode(self.character)
 	self.characterNP.setPos(0, -1, .2) # May need some tweaking
@@ -125,10 +132,11 @@ class MakePlayer(DirectObject):
 	
 	# Reparent the camera to the player
 	base.camera.reparentTo(self.characterNP) 
-	base.camera.setPos(0,0,1.7) 
+	base.camera.setPos(0,0,1) 
 	base.camLens.setNearFar(camNear,camFar)
 	base.camLens.setFov(camFov) 
 	base.disableMouse()
+	gui = Crosshair()
 	
 	# Player Debug:
 	print ""

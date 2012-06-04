@@ -77,7 +77,7 @@ class Main(ShowBase):
 		
 	def init_world(self):
 		
-		self.level1 = MakeLevel(self, self.PhysicsClass, self.WorldClass, "Level1", "../assets/models/testWall.egg")
+		self.level1 = MakeLevel(self, self.PhysicsClass, self.WorldClass, "Level1", "../assets/models/advancelevel.egg")
 		
 		
 	def init_player(self):
@@ -93,18 +93,6 @@ game.run()
 
 
 #### QUICK THOUGHTS :P
-
-"""
-Was thinking about a scene where the player maybe looking around for something
-and it may so happen that his pretty far into a station (far away from his ship)
-and then to get to the thing he needs.. maybe power for ship.  Finally he gets there if he takes the object
-all power to the station his on goes down.  Leaving him in total darkness..
-Now he has to find his way back that maybe tricky since he had to go into some 
-hallway's and some rooms, making it a maze in darkness to get back to the ship.  
-
-At the same time he has limited air for his suit... 
-
-"""
 
 
 
