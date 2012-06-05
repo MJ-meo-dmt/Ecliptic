@@ -52,6 +52,12 @@ class GameObject():
 	self.objectBitMask = 0
 	self.objectParent = ""
 	
+	##  LIGHTS
+	self.lightRed = 0.0
+	self.lightGreen = 0.0
+	self.lightBlue = 0.0
+	self.lightPower = 0.0
+	
 	self.objectPosition = Point3(0, 0, 0)
 	self.objectHpr = VBase3(0, 0, 0)
 	self.objectScale = VBase3(0, 0, 0)
@@ -243,6 +249,7 @@ class SENSOR(GameObject):
 	# Parent it to the master NodePath for it
 	
 	self.object.reparentTo(self._world.sensorNP)
+	self.object.hide()
 	self.object.setPos(self.objectPosition)
 	self.object.setHpr(self.objectHpr)
 	
@@ -442,8 +449,14 @@ class TRIGGER(GameObject):
 
 class LIGHT(GameObject):
     
-    def __init__(self, _physics, _world, _model, object):
+    def __init__(self, _base, _physics, _world, _model, object):
 	GameObject.__init__(self)
+	
+	# Base
+	self._base = _base
+	
+	# Base Physics
+	self._physics = _physics
 	
 	# Base World
 	self._world = _world
@@ -491,14 +504,28 @@ class LIGHT(GameObject):
 	## LIGHT SPECIFICS ##
 	
 	# Floats 0.0 - 1.0
-	self.lightRed = self.object.getTag('LIGHT_RED')
-	self.lightGreen = self.object.getTag('LIGHT_GREEN')
-	self.lightBlue = self.object.getTag('LIGHT_BLUE')
-	self.lightPower = self.object.getTag('LIGHT_POWER')
+	self.lightRed = float(self.object.getTag('RED'))
+	self.lightGreen = float(self.object.getTag('GREEN'))
+	self.lightBlue = float(self.object.getTag('BLUE'))
+	self.lightPower = float(self.object.getTag('POWER'))
+
+	
+	# Setup lights for the level
+	self.plight = PointLight(self.objectName)
+	self.plight.setColor(VBase4(self.lightRed, self.lightGreen, self.lightBlue, 1))
+	self.plight.setAttenuation(Point3(0, 0, 0.1))
+	self.plnp = self._world.visLightsNP.attachNewNode(self.plight)
+	self.plnp.setPos(self.objectPosition)
+	self._base.render.setLight(self.plnp)
+	
+	
 	
 	# Maybe add flag here to check if vis or invis.
 	# Parent it to the master NodePath for it
-	self.object.reparentTo(self._world.visLightsNP)
+	#self.object.reparentTo(self._world.visLightsNP)
+	#self.object.setPos(self.objectPosition)
+	#self.object.setHpr(self.objectHpr)
+	#self.object.hide()
 
 
 

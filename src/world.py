@@ -33,11 +33,11 @@ class World(DirectObject):
 		# Testing light: Remove if done
 		############################################
 		# Setup lights for the level
-		plight = PointLight('plight')
-		plight.setColor(VBase4(0.7, 0.7, 0.7, 1))
-		plnp = render.attachNewNode(plight)
-		plnp.setPos(0, 0, 8)
-		render.setLight(plnp)
+		#plight = PointLight('plight')
+		#plight.setColor(VBase4(0.7, 0.7, 0.7, 1))
+		#plnp = render.attachNewNode(plight)
+		#plnp.setPos(0, 0, 8)
+		#render.setLight(plnp)
 		############################################
 		
 		# Keeps all geoms under this node: Game_Objects

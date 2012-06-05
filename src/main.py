@@ -77,7 +77,7 @@ class Main(ShowBase):
 		
 	def init_world(self):
 		
-		self.level1 = MakeLevel(self, self.PhysicsClass, self.WorldClass, "Level1", "../assets/models/advancelevel.egg")
+		self.level1 = MakeLevel(self, self.PhysicsClass, self.WorldClass, "Level1", "../assets/models/advancelevel2.egg")
 		
 		
 	def init_player(self):

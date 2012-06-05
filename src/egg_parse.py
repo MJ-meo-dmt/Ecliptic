@@ -92,7 +92,7 @@ class Parse():
 		num_triggers += 1
 		
 	    if object.hasTag('LIGHT'):
-		OBJECTS[object.getTag('LIGHT')] = LIGHT(self._physics, self._world, self.model, object)
+		OBJECTS[object.getTag('LIGHT')] = LIGHT(self._base, self._physics, self._world, self.model, object)
 		num_lights += 1
 		
 	    if object.hasTag('ITEM'):
