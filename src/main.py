@@ -71,6 +71,7 @@ class Main(ShowBase):
 		
 		# Debug: Show the scene graph.
 		self.render.ls()
+		print sys.getsizeof(OBJECTS)
 		
 		
 		

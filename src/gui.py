@@ -19,7 +19,7 @@ from panda3d.core import TransparencyAttrib
 # Player Crosshair
 class Crosshair(DirectObject):
 	def __init__(self):
-		self.crosshair = OnscreenImage('../assets/gui/crosshair2.png', (0, 0, 0) )
+		self.crosshair = OnscreenImage('../assets/gui/crosshair3.png', (0, 0, 0) )
 		self.crosshair.setScale(0.03)
-		self.crosshair.setTransparency(TransparencyAttrib.MAlpha)
+		self.crosshair.setTransparency(TransparencyAttrib.MAlpha, 0)
 

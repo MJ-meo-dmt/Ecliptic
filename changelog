@@ -45,3 +45,12 @@ Version 0.0.01
 
 - Added some changes to the game_prop.py
 - Added a basic gui_crosshair
+
+07/06/2012
+> MJ-meo-dmt
+
+- Started on the Ghost objects
+- Redone the basic crosshair
+- Started on the event system
+- Added some changes to the other files, parser, gameprop ...
+

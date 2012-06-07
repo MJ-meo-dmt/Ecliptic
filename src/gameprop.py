@@ -66,11 +66,14 @@ class GameObject():
 class FLOOR(GameObject):
     
     
-    def __init__(self, _physics, _world, _model, object):
+    def __init__(self, _base, _physics, _world, _model, object):
 	
 	# Init the base class
 	GameObject.__init__(self)
 	
+	# Base
+	self._base = _base
+
 	# Base Physics
 	self._physics = _physics
 	
@@ -126,10 +129,13 @@ class FLOOR(GameObject):
 	
 class WALL(GameObject):
     
-    def __init__(self, _physics, _world, _model, object):
+    def __init__(self, _base, _physics, _world, _model, object):
 	
 	# Init the base class
 	GameObject.__init__(self)
+	
+	# Base
+	self._base = _base
 	
 	# Base Physics
 	self._physics = _physics
@@ -193,10 +199,16 @@ class SENSOR(GameObject):
     Then parented to the master NodePath for sensors.
     """
     
-    def __init__(self, _physics, _world, _model, object):
+    def __init__(self, _base, _physics, _world, _model, object):
 	
 	# Init the base class
 	GameObject.__init__(self)
+	
+	# Base
+	self._base = _base
+	
+	# Base Physics
+	self._physics = _physics
 	
 	# Base World
 	self._world = _world
@@ -243,22 +255,35 @@ class SENSOR(GameObject):
 	# Set the position and rotation
 	self.objectPosition = self.object.getPos(_model)
 	self.objectHpr = self.object.getHpr(_model)
+	self.objectScale = self.object.getScale(_model)
 	
+	#-------------------------------------------------#
+	# Setup the ghost shape
 	
-	# Here we add something like, if the object is setup,
-	# Parent it to the master NodePath for it
+	solid_collection = BulletHelper.fromCollisionSolids(self.object)
 	
-	self.object.reparentTo(self._world.sensorNP)
-	self.object.hide()
-	self.object.setPos(self.objectPosition)
-	self.object.setHpr(self.objectHpr)
+	shape = BulletSphereShape(self.objectScale[0]/2)
+	
+	# Get the node and apply the ghost 
+	ghost = BulletGhostNode('Ghost-'+self.objectName)
+	ghost.addShape(shape)
+	ghostNP = self._world.sensorNP.attachNewNode(ghost)
+	ghostNP.setPos(self.objectPosition)
+	ghostNP.setCollideMask(BitMask32(0x0f))
+	
+	self._physics.world.attachGhost(ghost)
+	#-------------------------------------------------#
+	
 	
 	
 	
 class DOOR(GameObject):
     
-    def __init__(self, _physics, _world, _model, object):
+    def __init__(self, _base, _physics, _world, _model, object):
 	GameObject.__init__(self)
+	
+	# Base
+	self._base = _base
 	
 	# Base Physics
 	self._physics = _physics
@@ -341,8 +366,12 @@ class DOOR(GameObject):
 	
 class PLAYER(GameObject):
     
-    def __init__(self, _physics, _world, _model, object):
+    def __init__(self, _base, _physics, _world, _model, object):
+	
 	GameObject.__init__(self)
+	
+	# Base
+	self._base = _base
 	
 	# Base world
 	self._world = _world
@@ -395,8 +424,11 @@ class PLAYER(GameObject):
 
 class TRIGGER(GameObject):
     
-    def __init__(self, _physics, _world, _model, object):
+    def __init__(self, _base, _physics, _world, _model, object):
 	GameObject.__init__(self)
+	
+	# Base
+	self._base = _base
 	
 	# Base World
 	self._world = _world
@@ -508,17 +540,21 @@ class LIGHT(GameObject):
 	self.lightGreen = float(self.object.getTag('GREEN'))
 	self.lightBlue = float(self.object.getTag('BLUE'))
 	self.lightPower = float(self.object.getTag('POWER'))
+	
+	
+	# Setup the light TYPE
+	
+	if self.objectType == 'POINT':
+	    
+	    # Setup lights for the level
+	    self.plight = PointLight(self.objectName)
+	    self.plight.setColor(VBase4(self.lightRed, self.lightGreen, self.lightBlue, 1))
+	    self.plight.setAttenuation(Point3(0, 0, 0.1))
+	    self.plnp = self._world.visLightsNP.attachNewNode(self.plight)
+	    self.plnp.setPos(self.objectPosition)
+	    self._base.render.setLight(self.plnp)
+	
 
-	
-	# Setup lights for the level
-	self.plight = PointLight(self.objectName)
-	self.plight.setColor(VBase4(self.lightRed, self.lightGreen, self.lightBlue, 1))
-	self.plight.setAttenuation(Point3(0, 0, 0.1))
-	self.plnp = self._world.visLightsNP.attachNewNode(self.plight)
-	self.plnp.setPos(self.objectPosition)
-	self._base.render.setLight(self.plnp)
-	
-	
 	
 	# Maybe add flag here to check if vis or invis.
 	# Parent it to the master NodePath for it
@@ -531,8 +567,11 @@ class LIGHT(GameObject):
 
 class ITEM(GameObject):
     
-    def __init__(self, _physics, _world, _model, object):
+    def __init__(self, _base, _physics, _world, _model, object):
 	GameObject.__init__(self)
+	
+	# Base
+	self._base = _base
 	
 	# Base World
 	self._world = _world
@@ -585,8 +624,11 @@ class ITEM(GameObject):
 
 class SCREEN(GameObject):
     
-    def __init__(self, _physics, _world, _model, object):
+    def __init__(self, _base, _physics, _world, _model, object):
 	GameObject.__init__(self)
+	
+	# Base
+	self._base = _base
 	
 	# Base World
 	self._world = _world
@@ -639,8 +681,11 @@ class SCREEN(GameObject):
 
 class PARTICLES(GameObject):
     
-    def __init__(self, _physics, _world, _model, object):
+    def __init__(self, _base, _physics, _world, _model, object):
 	GameObject.__init__(self)
+	
+	# Base
+	self._base = _base
 	
 	# Base World
 	self._world = _world
@@ -693,8 +738,11 @@ class PARTICLES(GameObject):
 
 class SUIT(GameObject):
     
-    def __init__(self, _physics, _world, _model, object):
+    def __init__(self, _base, _physics, _world, _model, object):
 	GameObject.__init__(self)
+	
+	# Base
+	self._base = _base
 	
 	# Base World
 	self._world = _world
@@ -747,8 +795,11 @@ class SUIT(GameObject):
 
 class DECOR(GameObject):
     
-    def __init__(self, _physics, _world, _model, object):
+    def __init__(self, _base, _physics, _world, _model, object):
 	GameObject.__init__(self)
+	
+	# Base
+	self._base = _base
 	
 	# Base World
 	self._world = _world

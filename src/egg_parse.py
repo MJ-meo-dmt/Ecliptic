@@ -67,28 +67,27 @@ class Parse():
 	    # Floor and wall is the only two with extra tag's <Collide> {Polyset keep Descend}
 	    #
 	    if object.hasTag('FLOOR'):
-		OBJECTS[object.getTag('FLOOR')] = FLOOR(self._physics, self._world, self.model, object)
+		OBJECTS[object.getTag('FLOOR')] = FLOOR(self._base, self._physics, self._world, self.model, object)
 		
 	    if object.hasTag('WALL'):
-		OBJECTS[object.getTag('WALL')] = WALL(self._physics, self._world, self.model, object)
-	    
+		OBJECTS[object.getTag('WALL')] = WALL(self._base, self._physics, self._world, self.model, object)
 	    
 	    # -------------------------------------------------------------------------------------------#
 	    #  GAME OBJECTS / LOGIC
 	    #
 	    if object.hasTag('SENSOR'):
-		OBJECTS[object.getTag('SENSOR')] = SENSOR(self._physics, self._world, self.model, object)
+		OBJECTS[object.getTag('SENSOR')] = SENSOR(self._base, self._physics, self._world, self.model, object)
 		num_sensors += 1
 		
 	    if object.hasTag('DOOR'):
-		OBJECTS[object.getTag('DOOR')] = DOOR(self._physics, self._world, self.model, object)
+		OBJECTS[object.getTag('DOOR')] = DOOR(self._base, self._physics, self._world, self.model, object)
 		num_doors += 1
 		
 	    if object.hasTag('PLAYER'):
-		OBJECTS[object.getTag('PLAYER')] = PLAYER(self._physics, self._world, self.model, object)
+		OBJECTS[object.getTag('PLAYER')] = PLAYER(self._base, self._physics, self._world, self.model, object)
 		
 	    if object.hasTag('TRIGGER'):
-		OBJECTS[object.getTag('TRIGGER')] = TRIGGER(self._physics, self._world, self.model, object)
+		OBJECTS[object.getTag('TRIGGER')] = TRIGGER(self._base, self._physics, self._world, self.model, object)
 		num_triggers += 1
 		
 	    if object.hasTag('LIGHT'):
@@ -96,21 +95,21 @@ class Parse():
 		num_lights += 1
 		
 	    if object.hasTag('ITEM'):
-		OBJECTS[object.getTag('ITEM')] = ITEM(self._physics, self._world, self.model, object)
+		OBJECTS[object.getTag('ITEM')] = ITEM(self._base, self._physics, self._world, self.model, object)
 		num_items += 1
 		
 	    if object.hasTag('SCREEN'):
-		OBJECTS[object.getTag('SCREEN')] = SCREEN(self._physics, self._world, self.model, object)
+		OBJECTS[object.getTag('SCREEN')] = SCREEN(self._base, self._physics, self._world, self.model, object)
 		
 	    if object.hasTag('PARTICLES'):
-		OBJECTS[object.getTag('PARTICLES')] = PARTICLES(self._physics, self._world, self.model, object)
+		OBJECTS[object.getTag('PARTICLES')] = PARTICLES(self._base, self._physics, self._world, self.model, object)
 		num_particles += 1
 		
 	    if object.hasTag('SUIT'):
-		OBJECTS[object.getTag('SUIT')] = SUIT(self._physics, self._world, self.model, object)
+		OBJECTS[object.getTag('SUIT')] = SUIT(self._base, self._physics, self._world, self.model, object)
 		
 	    if object.hasTag('DECOR'):
-		OBJECTS[object.getTag('DECOR')] = DECOR(self._physics, self._world, self.model, object)
+		OBJECTS[object.getTag('DECOR')] = DECOR(self._base, self._physics, self._world, self.model, object)
 		
 		
 		

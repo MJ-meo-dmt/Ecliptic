@@ -21,13 +21,16 @@ self.objectScale = VBase3(0, 0, 0) 	- VBase3
 
 ## TAGS ##
 
+# !!! NOTE:  Don't add CTRL+A "Loc" to lights other wise the position can't be found/used
+# !!! NOTE:  Don't add CTRL+A "scale" to sensors other wise the scale can't be used for BulletGhost shape
+
 # MAIN TAGS FOR PARSER #
 #------#
 # THESE TWO ARE VERY DEPENDED ON APPLYING 'loc+rot+scale' IN BLENDER
 FLOOR 					- Floor_Name
 WALL					- Wall_Name
 #------#
-SENSOR					- Sensor_Name/Number  # Used for lights, and other moments
+SENSOR					- Sensor_Name/Number  # Used for lights, and other moments * DON'T apply scale on SENSORS!!
 DOOR					- Door_Name/Number # Place holder for DYNAMIC DOOR objects
 PLAYER					- Player_Spawn(This would be the spawn point)
 TRIGGER					- Trigger_Name/Number # Used for things the player interact with, switch, buttons stuff
@@ -45,7 +48,7 @@ DECOR					- Decor_Name/Number
 Collide 				- Polyset keep Descend
 # --------#
 NAME 					- From First Tag# This is the getTag from the MAIN Tag.  Say SENSOR = Sensor0 which then gets used as the Name
-TYPE					- STATIC / DYNAMIC / GHOST 
+TYPE					- STATIC / DYNAMIC / GHOST # LIGHTS # = POINT / DYNAMIC / SPOT etc
 TRIGGERS				- "triggers" = # The object this object TRIGGERS: Light01
 AREA					- The Area this object is found within: Area0(Ship interior)
 PICKABLE				- True/False: Bool
