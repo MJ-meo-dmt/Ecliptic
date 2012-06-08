@@ -16,6 +16,7 @@ from pandac.PandaModules import *
 from panda3d.core import *
 from panda3d.bullet import *
 from panda3d.core import BitMask32
+from direct.showbase.DirectObject import DirectObject
 
 
 # Game imports
@@ -28,7 +29,7 @@ from globals import *
 
 
 # Base object class
-class GameObject():
+class GameObject(DirectObject):
     
     """
     GameObject Class:
@@ -253,27 +254,27 @@ class SENSOR(GameObject):
 	self.objectParent = self.object.getTag('PARENT')
 	
 	# Set the position and rotation
-	self.objectPosition = self.object.getPos(_model)
+	self.objectPosition = self.object.getPos()
 	self.objectHpr = self.object.getHpr(_model)
 	self.objectScale = self.object.getScale(_model)
 	
+	
 	#-------------------------------------------------#
 	# Setup the ghost shape
-	
-	solid_collection = BulletHelper.fromCollisionSolids(self.object)
 	
 	shape = BulletSphereShape(self.objectScale[0]/2)
 	
 	# Get the node and apply the ghost 
 	ghost = BulletGhostNode('Ghost-'+self.objectName)
 	ghost.addShape(shape)
-	ghostNP = self._world.sensorNP.attachNewNode(ghost)
-	ghostNP.setPos(self.objectPosition)
-	ghostNP.setCollideMask(BitMask32(0x0f))
+	self.ghostNP = self._world.sensorNP.attachNewNode(ghost)
+	self.ghostNP.setPos(self.objectPosition)
+	self.ghostNP.setCollideMask(BitMask32(0x0f))
 	
 	self._physics.world.attachGhost(ghost)
 	#-------------------------------------------------#
 	
+	self.object.reparentTo(render)
 	
 	
 	

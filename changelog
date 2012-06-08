@@ -54,3 +54,12 @@ Version 0.0.01
 - Started on the event system
 - Added some changes to the other files, parser, gameprop ...
 
+08/06/2012
+> MJ-meo-dmt
+
+- Started on event system - check for ghost objects
+- fixed some player.py issues
+- Added extra dict for objects since i think it would be easier to use with the getOverLappingNodes()
+- added extra Information under blender sheet!!!
+
+

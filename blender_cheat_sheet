@@ -23,6 +23,7 @@ self.objectScale = VBase3(0, 0, 0) 	- VBase3
 
 # !!! NOTE:  Don't add CTRL+A "Loc" to lights other wise the position can't be found/used
 # !!! NOTE:  Don't add CTRL+A "scale" to sensors other wise the scale can't be used for BulletGhost shape
+# !!! NOTE:  Don't add CTRL+A "Loc" to sensors other wise the position is worthless
 
 # MAIN TAGS FOR PARSER #
 #------#

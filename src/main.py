@@ -39,7 +39,7 @@ from direct.showbase.DirectObject import DirectObject
 # Game imports
 from world import *
 from player import *
-#from collisions import *
+from gamelogic import *
 from globals import *
 from physics import *
 
@@ -64,6 +64,9 @@ class Main(ShowBase):
 		self.WorldClass = World()
 		self.PhysicsClass = Physics(self, self.WorldClass)
 		self.PlayerClass = Player()
+		
+		# Event Instances
+		self.SensorEvent = SensorEvent(self, self.WorldClass, self.PhysicsClass)
 		
 		# init the main methods
 		self.init_player()

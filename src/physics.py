@@ -70,7 +70,7 @@ class Physics(DirectObject):
 	# test the class test
 	self.test = MakeObject(self, 'Box1', 'b', 20.0)
 	self.test.bodyNP.setPos(0, 1, 1)
-	print self.test.body.getGravity()
+	
 	
 	pos = 1
 	
@@ -93,9 +93,9 @@ class Physics(DirectObject):
 	##
 	##  GROUND FOR TESTING 
 	#############################################
-	
+	pass
 	# Ground
-	shape = BulletPlaneShape(Vec3(0, 0, 1), 0)
+	#shape = BulletPlaneShape(Vec3(0, 0, 1), 0)
 
 	#np = self.worldNP.attachNewNode(BulletRigidBodyNode('Ground'))
 	#np.node().addShape(shape)
@@ -107,14 +107,6 @@ class Physics(DirectObject):
 	##############################################
 	##############################################
 	
-	
-    def checkGhost(self, task):
-	ghost = self.sensor.node()
-	print ghost.getNumOverlappingNodes()
-	for node in ghost.getOverlappingNodes():
-	    print node
-	
-	return task.cont
 	
 	
 	########################
