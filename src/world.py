@@ -48,8 +48,7 @@ class World(DirectObject):
 		self.master_LightNP = render.attachNewNode('MASTER_LIGHTS')
 		
 		# subnodes for Game_Objects
-		self.floorNP = self.master_GeomNP.attachNewNode('FLOORS')
-		self.wallNP = self.master_GeomNP.attachNewNode('WALLS')
+		self.roomNP = self.master_GeomNP.attachNewNode('ROOMS')
 		self.sensorNP = self.master_GeomNP.attachNewNode('SENSORS')
 		self.doorNP = self.master_GeomNP.attachNewNode('DOORS')
 		self.playerNP = self.master_GeomNP.attachNewNode('PLAYER')
@@ -57,12 +56,12 @@ class World(DirectObject):
 		self.triggerNP = self.master_GeomNP.attachNewNode('TRIGGERS')
 		self.itemNP = self.master_GeomNP.attachNewNode('ITEMS')
 		self.screenNP = self.master_GeomNP.attachNewNode('SCREENS')
-		self.particlesNP = self.master_GeomNP.attachNewNode('PARTICLES')
+		self.particleNP = self.master_GeomNP.attachNewNode('PARTICLES')
 		self.decorNP = self.master_GeomNP.attachNewNode('DECOR')
-		self.visLightsNP = self.master_GeomNP.attachNewNode('VIS_LIGHTS')
+		self.visLightNP = self.master_GeomNP.attachNewNode('VIS_LIGHTS')
 		
 		# subnodes for lights
-		self.lightsNP = self.master_LightNP.attachNewNode('LIGHTS')
+		self.lightNP = self.master_LightNP.attachNewNode('LIGHTS')
 		
 		
 		
@@ -110,7 +109,7 @@ class MakeLevel():
 		self.level = loader.loadModel(levelModelPath)
 		
 		# Parse the egg model file and setup the level
-		Parse(self._base, self._physics, self._world, self.level)
+		ParseMain(self._base, self._physics, self._world, self.level)
 		
 		
 		

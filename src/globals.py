@@ -19,8 +19,7 @@ STATIONS = {}
 
 # Keeps all objects found in egg files with instance to class
 OBJECTS = {}
-OBJECTS['FLOOR'] = {}
-OBJECTS['WALL'] = {}
+OBJECTS['ROOM'] = {}
 OBJECTS['SENSOR'] = {}
 OBJECTS['DOOR'] = {}
 OBJECTS['PLAYER'] = {}

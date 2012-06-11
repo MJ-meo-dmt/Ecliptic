@@ -29,7 +29,7 @@ class SensorEvent():
 		# Base Physics
 		self._physics = _physics
 		
-		taskMgr.add(self.checkSensor, 'checkSensor')
+		#taskMgr.add(self.checkSensor, 'checkSensor')
 		
 		
 	def checkSensor(self, task):

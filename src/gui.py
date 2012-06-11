@@ -23,3 +23,20 @@ class Crosshair(DirectObject):
 		self.crosshair.setScale(0.03)
 		self.crosshair.setTransparency(TransparencyAttrib.MAlpha, 0)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
