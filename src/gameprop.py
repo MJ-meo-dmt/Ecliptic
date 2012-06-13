@@ -53,6 +53,7 @@ class baseObject(DirectObject):
 	self.objectParent = ""
     
 	##  LIGHTS
+	self.lightType = ""
 	self.lightRed = 0.0
 	self.lightGreen = 0.0
 	self.lightBlue = 0.0
@@ -85,23 +86,27 @@ class GameObject(baseObject):
         
         # Get the object
         self.object = object
-	print "@@@@@@", self.object
 	
-        ### Get the <TAG's> form the egg file ###
+	################################################
+        ###### Get the <TAG's> from the egg file #######
+	################################################
 	
 	# Get the correct Name for the object
 	self.tagList = ['ROOM', 'SENSOR', 'DOOR', 'PLAYER', 'TRIGGER', 'LIGHT',
 		'ITEM', 'SCREEN', 'PARTICLES', 'SUIT', 'DECOR']
 
 	name = ''
+	self.objectType = None
 	for i in self.tagList:
 	    if self.object.hasTag(i):
+		self.objectType = i
 		name = self.object.getTag(i)
+		
 	    
         
         # Get object name
         self.objectName = name
-	print 'OBJECT NAME: ',self.objectName
+	print 'Object name: ',self.objectName, ' have been made.'
 	
         # Get object triggers
         self.objectTriggers = self.object.getTag('TRIGGERS')
@@ -141,25 +146,31 @@ class GameObject(baseObject):
 	self.objectHpr = self.object.getHpr(_model)
 	self.objectScale = self.object.getScale(_model)
 	
+	################################################
+	
 	
 	### LIGHT SPECIFICS ###
-	if self.object.hasTag('LIGHT'):
+	if self.objectType == 'LIGHT':
 	    
 	    ### LIGHTS SETTINGS ###
-	    # Red, green, blue, power
-	    self.lightRed = float(self.object.getTag('RED'))
-	    self.lightGreen = float(self.object.getTag('GREEN'))
-	    self.lightBlue = float(self.object.getTag('BLUE'))
-	    self.lightPower = float(self.object.getTag('POWER'))
+	    # Type, Red, green, blue, power
+	    self.lightType = self.object.getTag('TYPE')
+	    self.lightRed = self.object.getTag('RED')
+	    self.lightGreen = self.object.getTag('GREEN')
+	    self.lightBlue = self.object.getTag('BLUE')
+	    self.lightPower = self.object.getTag('POWER')
+	    self.setLights()
 	
+	
+	###### INNER OBJECT SETUPS ######
 	# Setup object physics
-	self.setObjectPhysics()
+	if self.object.hasTag('PHYSICS'):
+	    self.setObjectPhysics()
 	
-	# reparent the object to the correct RenderNode
+	# Setup object RenderNode
 	self.setRenderNode()
 	
-	### Set the object's render node ###
-	
+    ### Set the object's render node ###
     def setRenderNode(self):
 	
 	# Reparent Reference dict
@@ -186,55 +197,79 @@ class GameObject(baseObject):
 		return self.object.reparentTo(setRenderNP[tag])
 	
 	
-    # Setup the object's physics body.
-    
+    ### Setup the object's physics body ###
     def setObjectPhysics(self):
 	"""
-	Method for setting up the object's physics/body and mass
-	
-	@param type: self.objectPhysics could be STATIC or DYNAMIC
-	@param mass: self.objectMass, the objects mass
+	Method for setting up the object's physics.
+	Counts for SENSOR's aswell.
 	"""
 	
-	bulletPhysics = type
-	bulletMass = 0.0#mass
+	Physics = self.objectPhysics
+	Mass = 0.0#self.objectMass
 	
-	# Get the geom nodes
-	
-	if self.object.hasTag('PHYSICS'):
+	# Get the geom node
+	objectNode = self.object.node()
+	objectGeom = objectNode.getGeom(0)
 	    
-	    objectNode = self.object.node()
-	    print "########>", objectNode
-	    objectGeom = objectNode.getGeom()
-	    
-	    '''
-	    for geomnode in self.object.findAllMatches("**/+GeomNode"):
-		print geomnode
-		for geom in geomnode.getGeom(0):
-		    print geom
-	    '''
-	
 	# Setup the bullet mesh
 	objectMesh = BulletTriangleMesh()
-	#objectMesh.addGeom(objectGeom)
+	objectMesh.addGeom(objectGeom)
 	
-	body = BulletRigidBodyNode('Bullet '+self.objectName)
-	
-	if bulletPhysics == 'STATIC':
+	# Setup a static object
+	if Physics == 'STATIC':
 	    
+	    body = BulletRigidBodyNode('Bullet '+self.objectName)
+	    self.bodyNP = self._world.staticNP.attachNewNode(body)
 	    shape = BulletTriangleMeshShape(objectMesh, dynamic=False)
-	    body.setKinematic(True)
-	
-	if bulletPhysics == 'DYNAMIC':
+	    self.bodyNP.node().setKinematic(True)
+	    self.bodyNP.node().addShape(shape)
+	    self.bodyNP.node().setMass(Mass)
+	    self.bodyNP.setCollideMask(BitMask32.allOn())
 	    
+	    # Attach the static object to the _physics world
+	    return self._physics.world.attachRigidBody(body)
+	
+	# Setup a Dynamic object
+	if Physics == 'DYNAMIC':
+	    
+	    body = BulletRigidBodyNode('Bullet '+self.objectName)
+	    self.bodyNP = self._world.dynamicNP.attachNewNode(body)
 	    shape = BulletTriangleMeshShape(objectMesh, dynamic=True)
+	    self.bodyNP.node().addShape(shape)
+	    self.bodyNP.node().setMass(Mass)
+	    self.bodyNP.setCollideMask(BitMask32.allOn())
+	    
+	    # Attach the dynamic object to the _physics world
+	    return self._physics.world.attachRigidBody(body)
 	
-	body.setMass(bulletMass)
-	#self.body.addShape(shape)
+	# Setup a Ghost object
+	if Physics == 'GHOST':
+	    
+	    ghost = BulletGhostNode('Ghost_sensor '+self.objectName)
+	    shape = BulletTriangleMeshShape(objectMesh, dynamic=False)
+	    ghost.addShape(shape)
+	    self.ghostNP = self._world.sensorNP.attachNewNode(ghost)
+	    self.ghostNP.setPos(self.objectPosition)
+	    self.ghostNP.setCollideMask(BitMask32(0x0f))
+	    
+	    # Attach the ghost object to the _physics world
+	    return self._physics.world.attachGhost(ghost)
 	
-	return body
+    
+    ### Setup lights ###
+    def setLights(self):
 	
-	
+	if self.lightType == 'POINT':
+	    
+	    # Testing light: Remove if done
+	    ############################################
+	    # Setup lights for the level
+	    plight = PointLight('plight')
+	    plight.setColor(VBase4(0.7, 0.7, 0.7, 1))
+	    plnp = render.attachNewNode(plight)
+	    plnp.setPos(0, 0, 8)
+	    render.setLight(plnp)
+	    ############################################
 	
 	
 	

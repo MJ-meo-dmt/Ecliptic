@@ -1,0 +1,124 @@
+<CoordinateSystem> { Z-Up }
+
+<Comment> {
+  "egg-trans -tbnall -o /home/mj-meo-dmt/Projects/ecliptic_space/Ecliptic/assets/models/NewRoom.egg /home/mj-meo-dmt/Projects/ecliptic_space/Ecliptic/assets/models/NewRoom.egg"
+}
+<Group> Point {
+  <Transform> {
+    <Matrix4> {
+      1 0 0 0
+      0 1 0 0
+      0 0 1 0
+      0.217 2.723 4.517 1
+    }
+  }
+  <Tag> LIGHT {
+    RoomLight
+  }
+}
+<Group> Cube {
+  <Transform> {
+    <Matrix4> {
+      1 0 0 0
+      0 1 0 0
+      0 0 1 0
+      0 0 0 1
+    }
+  }
+  <Tag> MASS {
+    0.0
+  }
+  <Tag> PHYSICS {
+    STATIC
+  }
+  <Tag> ROOM {
+    Wall
+  }
+  <VertexPool> Cube {
+    <Vertex> 0 {
+      -4.487 1 0.047
+    }
+    <Vertex> 1 {
+      -4.487 -1 0.047
+    }
+    <Vertex> 2 {
+      -6.487 -1 0.047
+    }
+    <Vertex> 3 {
+      -6.487 1 0.047
+    }
+    <Vertex> 4 {
+      -4.487 1 2.047
+    }
+    <Vertex> 5 {
+      -6.487 1 2.047
+    }
+    <Vertex> 6 {
+      -6.487 -1 2.047
+    }
+    <Vertex> 7 {
+      -4.487 -1 2.047
+    }
+  }
+  <Polygon> {
+    <Normal> { 0 0 -1 }
+    <VertexRef> { 0 1 2 3 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { 0 0 1 }
+    <VertexRef> { 4 5 6 7 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { 1 0 0 }
+    <VertexRef> { 0 4 7 1 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { 0 -1 0 }
+    <VertexRef> { 1 7 6 2 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { -1 0 0 }
+    <VertexRef> { 2 6 5 3 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { 0 1 0 }
+    <VertexRef> { 4 0 3 5 <Ref> { Cube } }
+  }
+}
+<Group> Plane {
+  <Transform> {
+    <Matrix4> {
+      1 0 0 0
+      0 1 0 0
+      0 0 1 0
+      0 0 0 1
+    }
+  }
+  <Tag> MASS {
+    0.0
+  }
+  <Tag> PHYSICS {
+    STATIC
+  }
+  <Tag> ROOM {
+    Floor
+  }
+  <VertexPool> Plane {
+    <Vertex> 0 {
+      7.962 7.962 0
+    }
+    <Vertex> 1 {
+      -7.962 7.962 0
+    }
+    <Vertex> 2 {
+      -7.962 -7.962 0
+    }
+    <Vertex> 3 {
+      7.962 -7.962 0
+    }
+  }
+  <Polygon> {
+    <Normal> { 0 0 1 }
+    <VertexRef> { 0 1 2 3 <Ref> { Plane } }
+  }
+}

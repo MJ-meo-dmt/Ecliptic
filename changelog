@@ -62,4 +62,11 @@ Version 0.0.01
 - Added extra dict for objects since i think it would be easier to use with the getOverLappingNodes()
 - added extra Information under blender sheet!!!
 
+12/06/2012
+> MJ-meo-dmt
+
+- Redone the gameprop.py (pipeline object setup)
+- Lights needs work(esp setting the light: render.setLight)
+- Blender sheet needs a redo, a lot of tags have changed
+- removed old useless models(egg files)
 

@@ -60,6 +60,10 @@ class World(DirectObject):
 		self.decorNP = self.master_GeomNP.attachNewNode('DECOR')
 		self.visLightNP = self.master_GeomNP.attachNewNode('VIS_LIGHTS')
 		
+		# subnodes for collision Game_objects
+		self.staticNP = self.master_ColNP.attachNewNode('STATIC_OBJECTS')
+		self.dynamicNP = self.master_ColNP.attachNewNode('DYNAMIC_OBJECTS')
+		
 		# subnodes for lights
 		self.lightNP = self.master_LightNP.attachNewNode('LIGHTS')
 		
