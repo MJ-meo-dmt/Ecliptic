@@ -1,0 +1,157 @@
+//Cg
+
+void vshader(float4 vtx_position : POSITION,
+             uniform sampler2D k_color : TEXUNIT0,
+             out float4 l_position : POSITION,
+             out float2 l_texcoord : TEXCOORD0,
+             out float4 l_pos : TEXCOORD1,
+             uniform float4 texpad_color,
+             uniform float4x4 mat_modelproj)
+{
+    l_position = mul(mat_modelproj, vtx_position);
+    l_texcoord = (vtx_position.xz * texpad_color.xy) + texpad_color.xy;
+    l_pos = l_position;
+}
+
+float2 poisson[60] =
+{
+     0.0000,  0.2500  ,
+	   -0.2165,  0.1250  ,
+	   -0.2165, -0.1250  ,
+	   -0.0000, -0.2500  ,
+	    0.2165, -0.1250  ,
+	    0.2165,  0.1250  ,
+	    0.0000,  0.5000  ,
+	   -0.2500,  0.4330  ,
+	   -0.4330,  0.2500  ,
+	   -0.5000,  0.0000  ,
+	   -0.4330, -0.2500  ,
+	   -0.2500, -0.4330  ,
+	   -0.0000, -0.5000  ,
+	    0.2500, -0.4330  ,
+	    0.4330, -0.2500  ,
+	    0.5000, -0.0000  ,
+	    0.4330,  0.2500  ,
+	    0.2500,  0.4330  ,
+	    0.0000,  0.7500  ,
+	   -0.2565,  0.7048  ,
+	   -0.4821,  0.5745  ,
+	   -0.6495,  0.3750  ,
+	   -0.7386,  0.1302  ,
+	   -0.7386, -0.1302  ,
+	   -0.6495, -0.3750  ,
+	   -0.4821, -0.5745  ,
+	   -0.2565, -0.7048  ,
+	   -0.0000, -0.7500  ,
+	    0.2565, -0.7048  ,
+	    0.4821, -0.5745  ,
+	    0.6495, -0.3750  ,
+	    0.7386, -0.1302  ,
+	    0.7386,  0.1302  ,
+	    0.6495,  0.3750  ,
+	    0.4821,  0.5745  ,
+	    0.2565,  0.7048  ,
+	    0.0000,  1.0000  ,
+	   -0.2588,  0.9659  ,
+	   -0.5000,  0.8660  ,
+	   -0.7071,  0.7071  ,
+	   -0.8660,  0.5000  ,
+	   -0.9659,  0.2588  ,
+	   -1.0000,  0.0000  ,
+	   -0.9659, -0.2588  ,
+	   -0.8660, -0.5000  ,
+	   -0.7071, -0.7071  ,
+	   -0.5000, -0.8660  ,
+	   -0.2588, -0.9659  ,
+	   -0.0000, -1.0000  ,
+	    0.2588, -0.9659  ,
+	    0.5000, -0.8660  ,
+	    0.7071, -0.7071  ,
+	    0.8660, -0.5000  ,
+	    0.9659, -0.2588  ,
+	    1.0000, -0.0000  ,
+	    0.9659,  0.2588  ,
+	    0.8660,  0.5000  ,
+	    0.7071,  0.7071  ,
+	    0.5000,  0.8660  ,
+	    0.2588,  0.9659  ,
+};
+void fshader(float2 l_texcoord : TEXCOORD0,
+             float4 l_position : TEXCOORD1,
+             uniform sampler2D k_color : TEXUNIT0,
+             uniform sampler2D k_color_fullres : TEXUNIT3,
+             uniform sampler2D k_preblurmap : TEXUNIT3,
+             uniform sampler2D k_depth : TEXUNIT2,
+             uniform sampler2D k_line : TEXUNIT1,
+             uniform float4 vspos_camera,
+             uniform float3 k_params,
+             uniform float3 k_resolution,
+             uniform float4 texpix_color,
+             uniform float4 texpad_color,
+             uniform float4 texpad_depth,
+             uniform float3 k_clipplanes,
+             uniform float4x4 trans_view_to_world,
+             out float4 o_color : COLOR)
+{
+        float blurclamp = k_params.x;  // max blur amount
+        float aperture = k_params.y; // aperture
+        float focus = k_params.z;// focus
+
+        float aspectratio = k_resolution.x/k_resolution.y;
+        vec2 aspectcorrect = vec2(1.0,aspectratio);
+
+        vec4 depth   = tex2D(k_depth,l_texcoord.xy );
+
+        float factor = ( depth.x - focus);
+        //factor = depth.x;
+        
+        vec2 dofblur = vec2 (clamp( factor * aperture, -blurclamp, blurclamp ));
+
+        vec4 col = vec4(0.0);
+
+        for (int t = 0; t < 6; t++) col += tex2D(k_color, l_texcoord + poisson[t] * aspectcorrect * dofblur);;  
+        o_color = col/6; 
+        
+        float weight = (1/(dofblur*dofblur+1))*dot((col/6).rgb + 0.01, float3(0.2126,0.7152,0.0722) );
+        o_color += weight;
+
+        // bigger aperture = more light
+        o_color *= aperture/10 + 1.0;
+
+        // vignette effect must be visible with high aperture or with camera zoom
+        float radius = aperture*0.5 + 1.0;
+        float darkness = 0.05;
+	float2 vign_coords   = l_texcoord.xy - 0.5;
+	float vignette  = 1 - dot(vign_coords, vign_coords);
+        float darken = saturate(pow(vignette, radius) + darkness);
+
+        // apply vignette
+        o_color.rgb *= float3(darken,darken,darken);
+
+        o_color.a = 1.0;
+        
+         // Get the scene texel
+        //float4 NormalScene = tex2D(k_color, l_texcoord.xy);
+
+        // Get the blurred scene texel
+        //float4 BlurScene = tex2D(k_preblurmap, l_texcoord.xy);
+
+        // Get the depth texel
+        //float4 fDepth = tex2D(k_depth, l_texcoord.xy);
+
+        // Invert the depth texel so the background is white and the nearest objects are black
+        //fDepth = 1 - fDepth;
+        
+        //float Near, Far;
+        
+        //Near = k_clipplanes.x;
+        //Far = k_clipplanes.y;
+        
+        // Calculate the distance from the selected distance and range on our DoF effect, set from the application
+        //float fSceneZ = ( -Near * Far ) / ( fDepth.a - Far);
+        //float blurFactor = saturate(abs(fDepth.a - k_params.z)/k_params.y);
+
+        // Based on how far the texel is from "distance" in Distance, stored in blurFactor, mix the scene
+        //o_color.rgb = lerp(NormalScene,col,blurFactor);    
+
+};

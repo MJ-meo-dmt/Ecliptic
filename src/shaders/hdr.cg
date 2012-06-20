@@ -1,0 +1,42 @@
+//Cg
+
+void vshader(float4 vtx_position : POSITION,
+             out float4 l_position : POSITION,
+             out float2 l_texcoord : TEXCOORD0,
+             uniform float4 texpad_color,
+             uniform float4x4 mat_modelproj)
+{
+    l_position = mul(mat_modelproj, vtx_position);
+    l_texcoord = (vtx_position.xz * texpad_color.xy) + texpad_color.xy;
+}
+
+
+void fshader(float2 l_texcoord : TEXCOORD0,
+             uniform sampler2D k_color : TEXUNIT0,
+             uniform half3 k_hdr_params,
+             uniform sampler2D k_bloom_map : TEXUNIT1,
+             out half4 o_color : COLOR)
+{
+
+    // Control exposure with this value
+    //float exposure = k_hdr_params.x;
+    // How much bloom to add
+    half bloomFactor = k_hdr_params.y;
+    // Max bright
+    //float brightMax = k_hdr_params.z;
+    
+    half4 color = tex2D(k_color, l_texcoord);
+    half4 colorBloom = tex2D(k_bloom_map, l_texcoord);
+    
+    //float4 glow_map = tex2D(k_glow_map, st);
+    // Add bloom to the image
+    color += colorBloom * 2 ;
+    // Perform tone-mapping
+    //float Y = dot(vec4(0.30, 0.59, 0.11, 0.0), color);
+    //float YD = exposure * (exposure/brightMax + 1.0) / (exposure + 1.0);
+    //color *= YD;
+    
+
+
+    o_color = color;
+}

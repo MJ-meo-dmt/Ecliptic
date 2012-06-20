@@ -1,0 +1,88 @@
+//Cg
+
+void vshader(
+         uniform float4x4 trans_model_to_view,
+         uniform float4x4 tpose_world_to_model,
+         uniform float4x4 tpose_view_to_model,
+         uniform float3 k_scale,
+	 out float3 l_normal : TEXCOORD1,
+         out float4 l_pos : TEXCOORD0,
+         out float4 l_texcoord0 : TEXCOORD2,
+         out float3 l_tangent : TEXCOORD3,
+	 out float3 l_binormal : TEXCOORD4,
+         out float3x3 l_TBN : TEXCOORD5,
+	 in float4 vtx_normal : NORMAL,
+	 in float4 vtx_tangent : TANGENT,
+	 in float4 vtx_binormal : BINORMAL,
+         in float4 vtx_texcoord0 : TEXCOORD0,
+	 float4 vtx_position : POSITION,
+	 out float4 l_position : POSITION,
+	 uniform float4x4 mat_modelproj
+             )
+{
+  l_position = mul(mat_modelproj, vtx_position * float4(k_scale,1) );
+  l_pos = l_position;
+
+  l_normal = (mul(tpose_world_to_model,vtx_normal));
+  l_texcoord0 = vtx_texcoord0;
+  l_tangent.xyz = (mul(tpose_world_to_model,vtx_tangent));
+
+  l_binormal.xyz = (mul(tpose_world_to_model, -vtx_binormal));
+
+
+}
+
+void fshader(in float4 l_pos : TEXCOORD0,
+             in float3 l_normal : TEXCOORD1,
+             in float4 l_texcoord0 : TEXCOORD2,
+             in float3 l_tangent : TEXCOORD3,
+	     in float3 l_binormal : TEXCOORD4,
+
+             uniform float4x4 trans_clip_to_model,
+             uniform float4x4 trans_model_to_world,
+             uniform float4x4 trans_clip_to_world,
+             uniform sampler2D k_normal : TEXUNIT2, // normal map
+             uniform sampler2D k_albedo : TEXUNIT3, // normal map
+             uniform float4 texpad_normal,
+             out float4 o_depth:DEPTH,
+             out float4 o_normal:COLOR0,
+             out float4 o_albedo:COLOR1)
+{
+
+
+
+
+
+
+
+
+
+
+
+  float4 normal = tex2D(k_normal, l_texcoord0.xy);
+  float4 albedo = tex2D(k_albedo, l_texcoord0.xy);
+  //expand normal map
+  normal = (normal-0.5) *2;
+
+
+
+  float3x3 l_TBN = float3x3(l_tangent,l_binormal,l_normal);
+  l_TBN = inverse(l_TBN);
+
+  normal.xyz = mul( l_TBN, normal.xyz );
+
+normal = normalize(normal);
+ normal = normal *0.5 + 0.5;
+
+
+
+
+
+
+
+
+
+  //o_depth = l_pos.z/l_pos.w;
+  //o_albedo = albedo;
+  o_normal.xyz = albedo ;
+}

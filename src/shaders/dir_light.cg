@@ -1,0 +1,92 @@
+//Cg
+
+// VERTEX SHADER //
+void vshader(
+            float4 vtx_position  : POSITION,
+            float3 vtx_normal    : NORMAL,
+            float2 vtx_texcoord0 : TEXCOORD0,
+            out float4 l_position : POSITION,
+            out float4 l_color     : COLOR,
+            out float4 l_shadowcoord : TEXCOORD1,
+	        out float4 l_lightclip : TEXCOORD3,
+	        out float4 l_modelpos : TEXCOORD4,
+	        out float3 l_normal : TEXCOORD5,
+	        out float4 l_texcoord : TEXCOORD6,
+	        uniform float3 k_scale,
+	        uniform float4 k_push,
+	        uniform float4x4 trans_model_to_clip_of_shadoworigin,
+	        uniform float4x4 mat_modelproj
+            )
+
+{
+
+    float4 position = vtx_position ;
+
+    l_position = mul(mat_modelproj, position); 
+    
+    l_modelpos = position;
+    
+    l_normal = vtx_normal;
+    
+    l_texcoord.xy = vtx_texcoord0;
+
+    // calculate light-space clip position.
+    float4 pushed = position + float4(vtx_normal * k_push, 0);
+    l_lightclip = mul(trans_model_to_clip_of_shadoworigin, pushed);
+
+    // calculate shadow-map texture coordinates.
+    l_shadowcoord = l_lightclip * float4(0.5,0.5,0.5,1.0) + l_lightclip.w * float4(0.5,0.5,0.5,0.0);
+}
+
+// PIXEL SHADER //
+void fshader(
+             uniform sampler2D k_shadowmap : TEXUNIT5,
+             uniform float4 k_push,
+             uniform float4x4 trans_clip_to_world,
+             uniform float4x4 trans_model_to_world,
+             uniform float3 k_globalambient,
+             uniform float3 k_lightcolor,
+             uniform float4 k_attrcolor,
+
+             uniform float4 wspos_camera,
+             uniform float3 k_scale,
+             in float4 l_color : COLOR,
+
+             in float4 l_shadowcoord : TEXCOORD1,
+             in float  l_smooth : TEXCOORD2,
+             in float4 l_lightclip : TEXCOORD3,
+             in float4 l_modelpos : TEXCOORD4,
+             in float3 l_normal : TEXCOORD5,
+             in float4 l_texcoord : TEXCOORD6,
+             out float4 o_color : COLOR0)
+{
+
+
+    
+    float3 circleoffs;
+    float falloff;
+    float shade;
+
+    // calculate light falloff
+    circleoffs = float3(l_lightclip.xy / l_lightclip.w, 0);
+    falloff = saturate(1.0 - dot(circleoffs, circleoffs));
+
+    // calculate shadows projection
+    //shade = tex2D(k_shadowmap,l_shadowcoord);
+    
+    
+    float4 proj = l_shadowcoord / l_shadowcoord.w;
+    float mapval = tex2D(k_shadowmap,proj.xy);
+    shade = (mapval > proj.z);
+    
+    //float4 color = k_attrcolor;
+    
+    //if(shade > 0.5) discard;
+
+    o_color.xyz = shade;
+    
+    
+    //if(shade.x < 1) o_color.xyz = float3(1,0,0);
+    // final output 
+
+}

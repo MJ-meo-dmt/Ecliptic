@@ -1,0 +1,135 @@
+//Cg 
+//SSAO
+
+void vshader(
+             float4 vtx_position : POSITION,
+             out float4 l_position : POSITION,
+             out float4 l_pos : TEXCOORD0,
+             uniform float4x4 mat_modelproj)
+{
+    float4 Position = vtx_position;
+    l_position = mul(mat_modelproj, vtx_position); 
+    l_pos = l_position;
+}
+
+
+float4 samples[8] =
+{
+    float4(0.355512,    -0.709318,  -0.102371,  0.0 ),
+    float4(0.534186,    0.71511,    -0.115167,  0.0 ),
+    float4(-0.87866,    0.157139,   -0.115167,  0.0 ),
+    float4(0.140679,    -0.475516,  -0.0639818, 0.0 ),
+    float4(-0.0796121,  0.158842,   -0.677075,  0.0 ),
+    float4(-0.0759516,  -0.101676,  -0.483625,  0.0 ),
+    float4(0.12493,     -0.0223423, -0.483625,  0.0 ),
+    float4(-0.0720074,  0.243395,   -0.967251,  0.0 )
+
+};
+float g_sample_rad = 1;
+float g_intensity = 0.5;
+float g_scale = 1;
+float g_bias = 0.01;
+float random_size = 64;
+float2 g_screen_size = float2(1024, 768);
+
+
+
+float doAmbientOcclusion(in float2 tcoord,in float2 uv, in float3 p, in float3 cnorm, in sampler2D depth)
+{
+    float3 diff = tex2D(depth,uv+tcoord).xyz - p;
+    const float3 v = normalize(diff);
+    const float d = length(diff)*g_scale;
+    return max(0.0,dot(cnorm,v)-g_bias)*(1.0/(1.0+d))*g_intensity;
+};
+
+void fshader(
+            in float4 l_position : TEXCOORD0,
+            uniform sampler2D k_normal : TEXUNIT2, // normal map
+            uniform sampler2D k_random : TEXUNIT3, // normal map
+            uniform sampler2D k_depth : TEXUNIT1, // depth map
+            uniform float4 texpad_depth,
+            uniform float4 vspos_camera, // position of camera in view space
+            uniform float4 wspos_camera, // position of camera in world space
+            uniform float4 vspos_model, // position of model in view space
+            uniform float4x4 trans_world_to_view,
+            uniform float4x4 mat_modelproj,
+            uniform float4x4 trans_clip_to_view,
+            uniform float4x4 trans_clip_to_world,
+            out float4 o_color0 : COLOR0
+            )
+{
+
+    
+    
+    // fragment position in clip space
+    l_position.xy /= l_position.w;
+
+    // textures input
+    float2 texcoords = float2(l_position.xy) * texpad_depth.xy + texpad_depth.xy;
+
+    float3 normal = tex2D(k_normal, texcoords);
+    float depth = tex2D(k_depth, texcoords);
+    float2 random = normalize(tex2D(k_random, g_screen_size * texcoords / random_size).xy * 2.0f - 1.0f);
+    
+
+    // point illuminated
+    float4 P;
+    P.xy = l_position.xy;
+    P.z = depth;
+    P.w = 1;
+    P = mul(trans_clip_to_view, P);
+    P /= P.w*2;
+
+    // normal
+    float3 N;
+    N = normal;
+    N.xyz = 2 * N.xyz;
+    N.xyz = N.xyz - 1;
+    N = mul(float3x3(trans_world_to_view),N);
+        
+    // light vector
+    float3 L = (vspos_model - P);
+    //if(k_dirlight.x == 1) L = (vspos_light - vspos_origin);
+
+    // ray length
+    float len = length(L);
+    
+    L = normalize(L);
+    N = normalize(N);
+    float3 V,H;
+       
+    V = normalize(vspos_camera - P);
+
+
+
+
+    const float2 vec[4] = {float2(1,0),float2(-1,0),
+                        float2(0,1),float2(0,-1)};
+
+    
+    
+    float3 p = P;
+    float3 n = N;
+    float2 rand = random;
+
+    float ao = 0.0f;
+    float rad = g_sample_rad/p.z;
+
+    //**SSAO Calculation**//
+    int iterations = 4;
+    for (int j = 0; j < iterations; ++j)
+    {
+      float2 coord1 = reflect(vec[j],rand)*rad;
+      float2 coord2 = float2(coord1.x*0.707 - coord1.y*0.707,
+                              coord1.x*0.707 + coord1.y*0.707);
+      
+      ao += doAmbientOcclusion(texcoords,coord1*0.25, p, n,k_depth);
+      ao += doAmbientOcclusion(texcoords,coord2*0.5, p, n,k_depth);
+      ao += doAmbientOcclusion(texcoords,coord1*0.75, p, n,k_depth);
+      ao += doAmbientOcclusion(texcoords,coord2, p, n,k_depth);
+    }
+    ao/=(float)iterations*4.0;
+    o_color0.xyz = P;
+    
+    
+}

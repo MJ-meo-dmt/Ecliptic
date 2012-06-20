@@ -1,0 +1,51 @@
+//Cg
+
+void vshader(
+             in float4 vtx_position : POSITION,
+             out float4 l_position : POSITION,
+             out float2 l_texcoord : TEXCOORD0,
+             uniform float4 texpad_depthnonlinear,
+             uniform float4x4 mat_modelproj)
+{
+    l_position = mul(mat_modelproj, vtx_position);
+    l_texcoord = (vtx_position.xz * texpad_depthnonlinear.xy) + texpad_depthnonlinear.xy;
+}
+
+
+void fshader( 
+            in float2 l_texcoord : TEXCOORD0,
+            out float4 o_color : COLOR0,
+            uniform float4 wspos_camera,
+            uniform float4 k_dofparams,
+            uniform sampler2D k_depthnonlinear : TEXUNIT0,
+            uniform float3 k_clipplanes)
+{
+
+    float n = k_clipplanes.x; // camera z near
+    float f = k_clipplanes.y; // camera z far
+    float z = tex2D(k_depthnonlinear, l_texcoord).x;
+    float depth = (2.0 * n) / (f + n - z * (f - n));
+  
+    o_color.xyz = depth;
+    
+    float blur;
+    
+    float cutoff = k_dofparams.w;
+    float near = k_dofparams.x;
+    float focal = k_dofparams.y;
+    float far = k_dofparams.z;
+    
+    if(depth < focal)
+    {
+        blur = (depth - focal) / (focal - near);
+    }
+    else
+    {
+        blur = (depth - focal) / (far - focal);
+        blur = clamp(blur, 0, cutoff);
+        
+    }
+    
+    o_color = blur * 0.5 * blur + 0.5 * blur;
+
+}

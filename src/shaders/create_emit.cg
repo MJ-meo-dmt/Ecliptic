@@ -1,0 +1,26 @@
+//Cg
+
+void vshader(half4 vtx_position : POSITION,
+             out half4 l_position : POSITION,
+             out half2 l_texcoord : TEXCOORD0,
+             uniform half4 texpad_emitmap,
+             uniform half4x4 mat_modelproj)
+{
+    l_position = mul(mat_modelproj, vtx_position);
+    l_texcoord = (vtx_position.xz * texpad_emitmap.xy) + texpad_emitmap.xy;
+}
+
+
+void fshader(half2 l_texcoord : TEXCOORD0,
+             uniform sampler2D k_emitmap : TEXUNIT0,
+             uniform sampler2D k_albedomap : TEXUNIT1,
+             out half4 o_color : COLOR)
+{
+
+    half4 emit = tex2D(k_emitmap, l_texcoord);
+    half4 albedo = tex2D(k_albedomap, l_texcoord);
+    
+    half4 bloom = emit.z * albedo;
+
+    o_color = bloom;
+}

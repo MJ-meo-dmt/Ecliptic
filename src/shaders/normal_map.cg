@@ -1,0 +1,132 @@
+//Cg
+// TODO OPTIMIZE
+
+void vshader(
+            uniform float4x4 trans_model_to_view,
+            uniform float4x4 tpose_world_to_model,
+            uniform float4x4 tpose_view_to_model,
+            uniform float4x4 trans_model_to_world,
+            uniform float4 wspos_light,
+	        uniform float4 mspos_light,
+            //uniform float3 k_scale,
+            out float4 l_lightVectorWorld : TEXCOORD5,
+	        out float4 l_lightVectorModel : TEXCOORD6,
+            out float4 l_pos : TEXCOORD0,
+            out float3 l_normal : TEXCOORD1,
+            out float4 l_texcoord0 : TEXCOORD2,
+            out float3 l_tangent : TEXCOORD3,
+            out float3 l_binormal : TEXCOORD4,
+            in float4 vtx_normal : NORMAL,
+            in float4 vtx_tangent : TANGENT,
+            in float4 vtx_binormal : BINORMAL,
+            in float4 vtx_texcoord0 :TEXCOORD0,
+            in float4 vtx_texcoord1 :TEXCOORD1,
+            uniform float4 k_depthOffset,
+            float4 vtx_position : POSITION,
+            out float4 l_position : POSITION,
+            uniform float4x4 mat_modelproj
+        )
+{
+    l_position = mul(mat_modelproj, vtx_position);
+    l_pos = l_position;
+
+    l_normal = (mul(tpose_world_to_model,vtx_normal));
+    l_texcoord0 = vtx_texcoord0 ;
+    l_tangent.xyz = (mul(tpose_world_to_model,vtx_tangent));
+
+    l_binormal.xyz = (mul(tpose_world_to_model, vtx_binormal));
+    
+    float4 worldPos = mul(trans_model_to_world, vtx_position+vtx_normal*0.01);
+	l_lightVectorWorld = wspos_light - worldPos;
+	l_lightVectorModel = mspos_light - vtx_position;
+
+ }
+
+void fshader(in float4 l_pos : TEXCOORD0,
+            in float3 l_normal : TEXCOORD1,
+            in float4 l_texcoord0 : TEXCOORD2,
+            in float3 l_tangent : TEXCOORD3,
+            in float3 l_binormal : TEXCOORD4,
+            uniform float3 k_modifier,
+            uniform float4 attr_colorscale,
+            uniform float4x4 trans_clip_to_model,
+            uniform float4x4 trans_model_to_world,
+            uniform float4x4 trans_clip_to_world,
+            uniform sampler2D tex_0 : TEXUNIT0, // albedo  
+            uniform sampler2D tex_1 : TEXUNIT1, // normals
+            uniform sampler2D tex_2 : TEXUNIT2, // speculars 
+            uniform sampler2D tex_3 : TEXUNIT3, // misc 
+            uniform samplerCUBE k_projDepthmap : TEXUNIT7, // normal 2
+
+	        float4 l_lightVectorWorld : TEXCOORD5,
+	        float4 l_lightVectorModel : TEXCOORD6,
+
+	        uniform float4 k_textureDims,
+	        uniform float4 k_smoothSamples,
+	        uniform float4 k_lensFar,
+	        uniform float4 k_penumbra,
+	        uniform float4 k_depthOffset,
+            
+            out float4 o_normal:COLOR0,
+            out float4 o_albedo:COLOR1,
+            out float4 o_specular:COLOR2,
+            out float4 o_misc:COLOR3
+            )
+{
+    l_texcoord0.x += k_modifier.x;
+    l_texcoord0.y -= k_modifier.y;
+
+    float4 normal = tex2D(tex_1, l_texcoord0.xy);
+    float4 albedo = tex2D(tex_0, l_texcoord0.xy);
+    float4 specular = tex2D(tex_2, l_texcoord0.xy);
+    float4 misc_map = tex2D(tex_3, l_texcoord0.xy);
+    
+    // NORMAL MAPS
+    normal = (normal-0.5) * 2;
+    float3x3 l_TBN = float3x3(l_tangent,l_binormal,l_normal);
+    l_TBN = transpose(l_TBN);
+    normal.xyz = mul( l_TBN, normal.xyz );
+    normal = normalize(normal) ;
+    normal = normal *0.5 + 0.5;
+
+    // SHADOWS
+	float distModel = length(l_lightVectorModel);
+	float4 lightVectorNormal = normalize(l_lightVectorModel);
+	float distWorld = length(l_lightVectorWorld);
+	float distWorldLens = distWorld / k_lensFar.x;
+	float texelDepth = distWorldLens - (distWorldLens * k_depthOffset.x);
+	float x, y;
+	float samples = float(k_smoothSamples.x);
+	float shadowUnit = sqrt(samples);
+	float range = (shadowUnit - 1.0) / 2.0;
+	float2 texmapscale = float2(1f/k_textureDims.x, 1f/k_textureDims.y) * (distWorld / (2.0 - k_penumbra.x));
+   
+	
+	// RENDER TO TARGETS
+	// albdeo     : 24 bits
+	// normals    : 24 bits
+	// speculars  : 24 bits
+	// smoothness : 8 bits
+	// shadows    : 8 bits
+	// emissivity : 8 bits
+	
+    float smoothness = misc_map.r;
+    float emissivity = misc_map.g;    
+		
+	// MRT0 : albedo
+    o_albedo.rgb = albedo.rgb;
+    o_albedo.a = 1;
+    
+    // MRT1 : normals
+    o_normal.xyz = normal.rgb;
+    o_normal.a = 1;
+     
+    // MRT2 : specular
+    o_specular.rgb = specular.rgb * specular.a;
+    o_specular.a = 1;
+    
+    // MRT3 : 
+    o_misc.rgb = float3(smoothness, 0, emissivity);
+    o_misc.a = 1;
+
+}

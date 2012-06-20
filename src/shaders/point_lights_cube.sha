@@ -1,0 +1,63 @@
+//Cg
+
+// TODO OPTIMIZE
+
+void vshader(
+	// Input
+	float4 vtx_position : POSITION,
+	float2 vtx_texcoord0 : TEXCOORD0,
+	
+	//~ float4 vtx_color : COLOR,
+	
+	// Input Unifor
+	uniform float4x4 mat_modelproj,
+	uniform float4x4 trans_model_to_world,
+	uniform float4 wspos_light2,
+	
+	// OUTPUT
+	out float4 l_lightVector : TEXCOORD1,
+	
+	//~ out float4 l_color0 : COLOR0,
+	
+	out float4 l_position : POSITION,
+	out float2 l_texcoord0 : TEXCOORD0
+	)
+{
+	l_position = mul(mat_modelproj, vtx_position);
+	
+	float4 worldPos = mul(trans_model_to_world, vtx_position);
+	l_lightVector = worldPos - wspos_light2;
+	
+	l_texcoord0 = vtx_texcoord0;
+	
+	//~ l_color0 = vtx_color;
+}
+
+void fshader(
+	// Input
+	float4 l_position : POSITION,
+	float2 l_texcoord0 : TEXCOORD0,
+	float4 l_lightVector : TEXCOORD1,
+	
+	//~ float4 l_color0 : COLOR0,
+	
+	// Uniform Input
+	uniform float4 k_lensFar,	
+	uniform float4 attr_colorscale,
+	
+	// Output
+	out float4 o_color: COLOR
+	)
+{
+    
+    
+	float d = length(l_lightVector);
+	
+
+    
+	float depth = d / k_lensFar.x;
+	
+	float3 color = attr_colorscale.xyz * (1.0 - attr_colorscale.w);
+	o_color = float4(color, depth);
+	//~ o_color = float4(depth * attr_colorscale.w);
+}

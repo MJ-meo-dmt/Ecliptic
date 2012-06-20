@@ -1,0 +1,41 @@
+//Cg
+
+void vshader(float4 vtx_position : POSITION,
+             out float4 l_position : POSITION,
+             out float2 l_texcoord : TEXCOORD0,
+             uniform float4 texpad_originalmap,
+             uniform float4x4 mat_modelproj)
+{
+    l_position = mul(mat_modelproj, vtx_position);
+    l_texcoord = (vtx_position.xz * texpad_originalmap.xy) + texpad_originalmap.xy;
+}
+
+void fshader(float2 l_texcoord : TEXCOORD0,
+             uniform float4 fogcolor,
+             uniform float4 power,
+             uniform sampler2D k_originalmap : TEXUNIT1,
+             uniform sampler2D k_lineardepth : TEXUNIT2,
+             out float4 o_color : COLOR)
+{
+
+    float4 scene = tex2D(k_originalmap, l_texcoord);
+    float lineardepth = tex2D(k_lineardepth, l_texcoord).x;
+    
+    float4 color = scene;
+    
+    float4 gray = 0.30*color.x + 0.59*color.y + 0.11*color.z;
+    
+    float redpower = power.x;
+    float bluepower = power.y;
+    float graypower = power.z;
+    float extinguishpower = power.a;
+    
+    //color.r += scene.r * 1/lineardepth * power.x;         // nearer objects are warmer in color
+    //color.b += scene.b * lineardepth * power.y;           // further objects are colder in color
+    //color = lerp(color, gray, lineardepth ) ;    // further objects lose saturation
+    //color = lerp(color, fogcolor, lineardepth * power.a ); // further objects extinguish (background color)
+    
+    //color = lerp(color, fogcolor, lineardepth);
+    o_color =  scene ;
+
+}

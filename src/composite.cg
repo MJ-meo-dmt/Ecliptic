@@ -1,0 +1,35 @@
+//Cg
+
+void vshader(float4 vtx_position : POSITION,
+             out float4 l_position : POSITION,
+             out float2 l_texcoord : TEXCOORD0,
+             uniform float4 texpad_mapA,
+             uniform float4x4 mat_modelproj)
+{
+    l_position = mul(mat_modelproj, vtx_position);
+    l_texcoord = (vtx_position.xz * texpad_mapA.xy) + texpad_mapA.xy;
+}
+
+
+
+void fshader(float2 l_texcoord : TEXCOORD0,
+             uniform sampler2D k_mapA : TEXUNIT0,
+             uniform sampler2D k_mapB : TEXUNIT1,
+             uniform float3 k_power,
+             out float4 o_color : COLOR)
+{
+
+
+    float4 base = tex2D(k_mapA, l_texcoord);
+    float4 base2 = tex2D(k_mapB, l_texcoord);
+    
+    // color to grayscale
+    //float3 coef = {0.3, 0.59, 0.11};
+    //base.rgb = lerp(base.rgb, dot(coef.rgb, base.rgb), 1);
+    
+    // additive light
+    o_color =  base ;
+    
+   
+
+}

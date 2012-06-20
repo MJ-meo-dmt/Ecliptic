@@ -1,0 +1,260 @@
+<CoordinateSystem> { Z-Up }
+
+<Comment> {
+  "egg-trans -tbnall -o /home/pierre/cube.egg /home/pierre/cube.egg"
+}
+<Texture> Texture {
+  cube.jpg
+}
+<Material> Material {
+  <Scalar> diffr { 0.64 }
+  <Scalar> diffg { 0.64 }
+  <Scalar> diffb { 0.64 }
+  <Scalar> emitr { 0 }
+  <Scalar> emitg { 0 }
+  <Scalar> emitb { 0 }
+  <Scalar> specr { 0.5 }
+  <Scalar> specg { 0.5 }
+  <Scalar> specb { 0.5 }
+  <Scalar> shininess { 12.5 }
+}
+<Group> Cube {
+  <Transform> {
+    <Matrix4> {
+      1 0 0 0
+      0 1 0 0
+      0 0 1 0
+      0 0 0 1
+    }
+  }
+  <VertexPool> Cube {
+    <Vertex> 0 {
+      -1 -1 -1
+      <UV> {
+        -1 0
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 1 {
+      -1 -1 1
+      <UV> {
+        -1 1
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 2 {
+      -1 -1 1
+      <UV> {
+        -1 0
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 1 0 }
+      }
+    }
+    <Vertex> 3 {
+      -1 1 1
+      <UV> {
+        -1 1
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 1 0 }
+      }
+    }
+    <Vertex> 4 {
+      1 -1 -1
+      <UV> {
+        0 0
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 5 {
+      1 -1 -1
+      <UV> {
+        -1 0
+        <Tangent> { 0 1 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 6 {
+      1 -1 1
+      <UV> {
+        0 1
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 7 {
+      1 -1 1
+      <UV> {
+        0 0
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 1 0 }
+      }
+    }
+    <Vertex> 8 {
+      1 -1 1
+      <UV> {
+        -1 1
+        <Tangent> { 0 1 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 9 {
+      1 1 -1
+      <UV> {
+        0 0
+        <Tangent> { 0 1 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 10 {
+      1 1 1
+      <UV> {
+        0 1
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 1 0 }
+      }
+    }
+    <Vertex> 11 {
+      1 1 1
+      <UV> {
+        0 1
+        <Tangent> { 0 1 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 12 {
+      -1 -1 -1
+      <UV> {
+        0 0
+        <Tangent> { 0 1 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 13 {
+      -1 -1 -1
+      <UV> {
+        -1 -1
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 1 0 }
+      }
+    }
+    <Vertex> 14 {
+      -1 -1 1
+      <UV> {
+        0 1
+        <Tangent> { 0 1 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 15 {
+      -1 1 -1
+      <UV> {
+        1 0
+        <Tangent> { 0 1 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 16 {
+      -1 1 -1
+      <UV> {
+        -1 0
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 1 0 }
+      }
+    }
+    <Vertex> 17 {
+      -1 1 -1
+      <UV> {
+        -1 -1
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 18 {
+      -1 1 1
+      <UV> {
+        1 1
+        <Tangent> { 0 1 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 19 {
+      -1 1 1
+      <UV> {
+        -1 0
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 20 {
+      1 -1 -1
+      <UV> {
+        0 -1
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 1 0 }
+      }
+    }
+    <Vertex> 21 {
+      1 1 -1
+      <UV> {
+        0 0
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 1 0 }
+      }
+    }
+    <Vertex> 22 {
+      1 1 -1
+      <UV> {
+        0 -1
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+    <Vertex> 23 {
+      1 1 1
+      <UV> {
+        0 0
+        <Tangent> { 1 0 0 }
+        <Binormal> { 0 0 1 }
+      }
+    }
+  }
+  <Polygon> {
+    <Normal> { 0 0 -1 }
+    <TRef> { Texture }
+    <MRef> { Material }
+    <VertexRef> { 21 20 13 16 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { 0 0 1 }
+    <TRef> { Texture }
+    <MRef> { Material }
+    <VertexRef> { 10 3 2 7 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { 1 0 0 }
+    <TRef> { Texture }
+    <MRef> { Material }
+    <VertexRef> { 9 11 8 5 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { 0 -1 0 }
+    <TRef> { Texture }
+    <MRef> { Material }
+    <VertexRef> { 4 6 1 0 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { -1 0 0 }
+    <TRef> { Texture }
+    <MRef> { Material }
+    <VertexRef> { 12 14 18 15 <Ref> { Cube } }
+  }
+  <Polygon> {
+    <Normal> { 0 1 0 }
+    <TRef> { Texture }
+    <MRef> { Material }
+    <VertexRef> { 23 22 17 19 <Ref> { Cube } }
+  }
+}

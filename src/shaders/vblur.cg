@@ -1,0 +1,41 @@
+//Cg
+
+void vshader(float4 vtx_position : POSITION,
+             out float4 l_position : POSITION,
+             out float2 l_texcoord : TEXCOORD0,
+             uniform float4 texpad_color,
+             uniform float4x4 mat_modelproj)
+{
+    l_position = mul(mat_modelproj, vtx_position);
+    l_texcoord = (vtx_position.xz * texpad_color.xy) + texpad_color.xy;
+}
+
+#define OPACITY 1
+
+
+void fshader(float2 l_texcoord : TEXCOORD0,
+             uniform sampler2D k_color : TEXUNIT0,
+             uniform sampler2D k_line : TEXUNIT1,
+             uniform float4 texpix_color,
+             uniform float4 texpad_color,
+             out float4 o_color : COLOR)
+{
+    float blurSize = 1.0/512.0;
+
+    vec4 sum = vec4(0.0);
+
+    // blur in y (vertical)
+    // take nine samples, with the distance blurSize between them
+    sum += tex2D(k_color, vec2(l_texcoord.x, l_texcoord.y - 4.0*blurSize)) * 0.05;
+    sum += tex2D(k_color, vec2(l_texcoord.x, l_texcoord.y - 3.0*blurSize)) * 0.09;
+    sum += tex2D(k_color, vec2(l_texcoord.x, l_texcoord.y - 2.0*blurSize)) * 0.12;
+    sum += tex2D(k_color, vec2(l_texcoord.x, l_texcoord.y - blurSize)) * 0.15;
+    sum += tex2D(k_color, vec2(l_texcoord.x, l_texcoord.y)) * 0.16;
+    sum += tex2D(k_color, vec2(l_texcoord.x, l_texcoord.y + blurSize)) * 0.15;
+    sum += tex2D(k_color, vec2(l_texcoord.x, l_texcoord.y + 2.0*blurSize)) * 0.12;
+    sum += tex2D(k_color, vec2(l_texcoord.x, l_texcoord.y + 3.0*blurSize)) * 0.09;
+    sum += tex2D(k_color, vec2(l_texcoord.x, l_texcoord.y + 4.0*blurSize)) * 0.05;
+
+    o_color = sum;
+
+}

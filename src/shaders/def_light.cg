@@ -1,0 +1,201 @@
+//Cg 
+// TODO OPTIMIZE + FINAL LOOK / EQUATION
+
+void vshader(
+             float4 vtx_position : POSITION,
+             out float4 l_position : POSITION,
+             out float4 l_pos : TEXCOORD0,
+             uniform float4x4 mat_modelproj)
+{
+    float4 Position = vtx_position;
+    l_position = mul(mat_modelproj, vtx_position); 
+    l_pos = l_position;
+}
+float fresnel(in float x)  {
+    float result;
+    float Kf = 1.12 ;
+    result = ( (1/((x - Kf) * (x - Kf))) - (1/ (Kf*Kf)) ) / ( (1/((1-Kf)*(1-Kf))) - (1/ (Kf*Kf)));
+    return result;
+}
+
+float shadow(in float x)  {
+    float result;
+    float Ks = 1.01 ;
+    result = (( (1/ (((1 - Ks)*(1 - Ks)))) - (1 / ((x - Ks)*(x - Ks))) ) / ( (1 / ((1 - Ks)*(1 - Ks))) - (1 / (Ks*Ks))));
+    return result;
+}
+void fshader(
+            in float4 l_position : TEXCOORD0,
+            uniform float3 k_shadows_on,
+            uniform sampler2D k_albedo : TEXUNIT0, // color map
+            uniform sampler2D k_depth : TEXUNIT1, // depth map
+            uniform sampler2D k_normal : TEXUNIT2, // normal map
+            uniform sampler2D k_specular : TEXUNIT3, // specular map
+            uniform samplerCUBE k_cubemap : TEXUNIT4, // reflective map
+            uniform sampler2D k_misc : TEXUNIT5, // misc map
+            uniform sampler2D k_random : TEXUNIT7, // materials index LUT
+            uniform float4 k_dofparams,
+            uniform float4 texpix_random,
+            uniform float4 texpad_depth,
+            uniform float4 attrcolor,
+            uniform float3 k_attenuation_params, // attenuation parameters
+            uniform float3 k_lightradius,
+            uniform float4 vspos_camera, // position of camera in view space
+            uniform float4 wspos_camera, // position of camera in world space
+            uniform float3 k_dirlight,
+            uniform float3 k_power,
+            uniform float4 vspos_model, // position of model in view space
+            uniform float4x4 trans_world_to_view,
+            uniform float4x4 trans_clip_to_view,
+            uniform float4x4 trans_clip_to_world,
+            out float4 o_color0 : COLOR0
+            )
+{
+    ////////////////////////////////////////////
+    //   DEFERRED POINT LIGHT IN VIEW SPACE   //
+    ////////////////////////////////////////////
+
+    // fragment position in clip space
+    l_position.xy /= l_position.w;
+
+    // textures input
+    float2 texcoords = float2(l_position.xy) * texpad_depth.xy + texpad_depth.xy;
+
+    float4 albedo = tex2D(k_albedo, texcoords);
+    float4 normal = tex2D(k_normal, texcoords);
+    float4 depth = tex2D(k_depth, texcoords);
+    float4 specular_map = tex2D(k_specular, texcoords);
+    float4 misc_map = tex2D(k_misc, texcoords);
+
+    // point illuminated
+    float4 P;
+    P.xy = l_position.xy;
+    P.z = depth;
+    P.w = 1;
+    P = mul(trans_clip_to_view, P);
+    P /= P.w*2;
+
+    // normal
+    float3 N;
+    N = normal;
+    N.xyz = 2 * N.xyz;
+    N.xyz = N.xyz - 1;
+    N = mul(float3x3(trans_world_to_view),N);
+        
+    // light vector
+    float3 L = (vspos_model - P);
+    //if(k_dirlight.x == 1) L = (vspos_light - vspos_origin);
+
+    // ray length
+    float len = length(L);
+    //if (len>k_lightradius.x)discard; // optimization 1
+    
+    L = normalize(L);
+    N = normalize(N);
+    float3 V,H;
+        
+    //float diffuseLight = max(dot(L, N),0);
+    
+    // optimization 2 
+    //if(diffuseLight==0)discard;
+
+    // light intensity for point lights
+    //I = E × (D2 / (D2 + Q × r2))                // quadratic attenuation from blender
+    //I’ = I × (D - r) / D if r < D; 0 otherwise  // sphere setting in blender
+    float E = k_attenuation_params.x;
+    float D = k_attenuation_params.y;
+    float r_ = len;
+    float Q = 1.0;
+    float D2 = D*D;
+
+    float intensity = E * ( D2 / (D2 + Q*r_*r_));
+    intensity = intensity * (D - r_) / D;
+    
+    if (len>D) intensity = 0;
+    
+    //if(k_dirlight.x == 1) attenuation = 1;
+       
+    V = normalize(vspos_camera - P);
+    H = normalize(L + V);
+
+
+    // reflections
+    float3 I;
+    I = (P.xyz - vspos_camera.xyz); 
+    float3 R = reflect(I,N);
+    R = normalize(R);   
+    float3 reflected_color = texCUBE(k_cubemap, R);
+
+    // STRAUSS MODEL //
+
+    // Make sure the interpolated inputs and
+    // constant parameters are normalized
+    float3 sm_n = (N);
+    float3 sm_l = (L);
+    float3 sm_v = (V);
+    float3 sm_h = reflect( sm_l, sm_n );
+
+    // Parameters
+    float fSmoothness = misc_map.r;
+    float fMetalness = misc_map.r;
+    float fTransparency = 0;
+    
+    float3 cDiffuse = 1;
+
+    // Declare any aliases:
+    float NdotL   = dot( sm_n, sm_l );
+    float NdotV   = dot( sm_n, sm_v );
+    float HdotV   = dot( sm_h, sm_v );
+    float fNdotL  = fresnel( NdotL );
+    float s_cubed = fSmoothness * fSmoothness * fSmoothness;
+
+    // Evaluate the diffuse term
+    float d  = ( 1.0f - fMetalness * fSmoothness );
+    float Rd = ( 1.0f - s_cubed ) * ( 1.0f - fTransparency );
+    float3 sm_diffuse = NdotL * d * Rd * cDiffuse;
+
+    // Compute the inputs into the specular term
+    float r = ( 1.0f - fTransparency ) - Rd;
+
+    float j = fNdotL * shadow( NdotL ) * shadow( NdotV );
+
+    // 'k' is used to provide small off-specular
+    // peak for very rough surfaces. Can be changed
+    // to suit desired results...
+    float k = 0.9f;
+    float reflect = min( 1.0f, r + j * ( r + k ) );
+
+    float3 C1 = float3(1.0,1.0,1.0);
+    float3 Cs = C1 + fMetalness * (1.0f - fNdotL) * (cDiffuse - C1);
+
+    // Evaluate the specular term
+    float3 sm_specular = Cs * reflect ;
+    sm_specular *= pow( -HdotV, 3.0f / (1.0f - fSmoothness) );
+
+    // Composite the final result, ensuring
+    // the values are >= 0.0f yields better results. Some
+    // combinations of inputs generate negative values which
+    // looks wrong when rendered...
+    sm_diffuse  = max( 0.0f, sm_diffuse );
+    sm_specular = max( 0.0f, sm_specular );
+    
+    float shadows = misc_map.y;
+
+    float4 final = float4( sm_diffuse * attrcolor * albedo  + sm_specular * attrcolor , 1.0f );
+
+    float emissivity = misc_map.z;
+    albedo.a = 1;
+    //o_color0.rgb = (sm_diffuse + sm_specular)* intensity * albedo * attrcolor ;
+    //o_color0.rgb =  specular_map* reflected_color*intensity + sm_specular * specular_map * intensity +  albedo * sm_diffuse * intensity  + emissivity * albedo*.1;
+
+    o_color0.rgb =  (sm_diffuse * albedo + sm_specular * specular_map );
+    if(k_shadows_on.x==1)o_color0.rgb =  shadows * (sm_diffuse * albedo +  sm_specular * specular_map);
+    
+    o_color0 *= attrcolor;
+    o_color0 *= intensity;
+    
+    //o_color0.rgb =  reflected_color * intensity;
+   // o_color0.xyz += (1 - k_shadows_on.x)*shadows*(sm_specular  + sm_diffuse * albedo) * attrcolor * intensity ;
+   // o_color0.xyz += reflected_color * strauss_map.z * intensity * albedo * attrcolor;
+   // o_color0.xyz += glow_map;
+}

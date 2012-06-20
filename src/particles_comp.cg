@@ -1,0 +1,42 @@
+//Cg 
+
+void vshader(in float4 vtx_position : POSITION, 
+             uniform float4 texpad_color, 
+             uniform float4x4 mat_modelproj, 
+        out float4 l_position : POSITION, 
+             out float2 l_texcoord : TEXCOORD0, 
+        out float4 l_screenpos : TEXCOORD1) 
+{ 
+    l_position = mul(mat_modelproj, vtx_position); 
+    l_texcoord = (vtx_position.xz * texpad_color.xy) + texpad_color.xy; 
+    l_screenpos = l_position; 
+} 
+
+void fshader(in float2 l_texcoord : TEXCOORD0, 
+        in float4 l_screenpos  : TEXCOORD1, 
+             uniform sampler2D k_color : TEXUNIT0, 
+             uniform sampler2D k_particles : TEXUNIT1, 
+             uniform sampler2D k_particles_depth : TEXUNIT2, 
+             uniform sampler2D k_scene_depth : TEXUNIT3, 
+             uniform float4 texpix_color, 
+             uniform float4 texpad_color, 
+             out float4 o_color : COLOR) 
+{ 
+
+    float scene_depth = tex2D(k_scene_depth, l_texcoord); 
+    float particles_depth = tex2D(k_particles_depth, l_texcoord); 
+
+    float4 scene = tex2D(k_color, l_texcoord); 
+    float4 particles = tex2D(k_particles, l_texcoord); 
+    
+    //float fade = saturate(scene_depth - particles_depth) * length(wspos_pe-wspos_camera); 
+    //fade =  clamp( fade, 0.0, 1.0 ); 
+  
+    //float4 output = (fade * particles)  + ((1.0 - fade) * scene); 
+    //o_color = output ; 
+    
+    //o_color = fade;
+    o_color = scene;
+    if(scene_depth>particles_depth)o_color = scene*particles;
+
+}
