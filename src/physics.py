@@ -41,13 +41,7 @@ class Physics(DirectObject):
     Handles the all Physics
     """
     
-    def __init__(self, _base, _world):
-	
-	# Base Class
-	self._base = _base
-	
-	# Base World
-	self._world = _world
+    def __init__(self):
 	
 	## Setup a bullet world.
 	
@@ -57,9 +51,10 @@ class Physics(DirectObject):
 	# World
 	self.world = BulletWorld()
 	self.world.setGravity(Vec3(0, 0, worldGravity))
+	PHYSICS['WORLD'] = self.world
 	
 	# Add the simulation method to the taskmgr
-	taskMgr.add(self.update, 'update')
+	taskMgr.add(self.update, 'update bullet world')
 	
 	# Setup test World
 	self.box = ''
@@ -121,19 +116,19 @@ class Physics(DirectObject):
 	
 	# Will have to make a pick up mask so that it collides with walls and floors and w/e else.. except with the player
 	if self.pickTest == False:
-	    self.test.bodyNP.wrtReparentTo(bodyA)
+	    self.test.bodyNP.wrtReparentTo(PLAYER['CLASS'].picker)
 	    #self.test.bodyNP.copyTo(bodyA)
 	    #self.test.worldNP
 	    #bodyB.setPos(0, 2, 0)
-	    self.test.bodyNP.node().setMass(0.0)
+	    self.test.bodyNP.node().setMass(1.0)
 	    #self.test.bodyNP.setScale(1)
 	    #self.test.bodyNP.setCollideMask(BitMask32.allOn())
 	    self.pickTest = True
 	    
 	    
 	elif self.pickTest == True:
-	    self.test.bodyNP.wrtReparentTo(self.worldNP)
-	    self.test.bodyNP.node().setMass(20.0)
+	    self.test.bodyNP.wrtReparentTo(GAMEPLAY_NODES['ITEM'])
+	    self.test.bodyNP.node().setMass(1.0)
 	    #self.test.bodyNP.setCollideMask(BitMask32.allOn())
 	   #bodyB.setPos(bodyPos)
 	    self.pickTest = False
@@ -151,7 +146,7 @@ class Physics(DirectObject):
 	
 	# To enable debug
 	self.debugNode = BulletDebugNode('Debug')
-	self.debugNode.showBoundingBoxes(False)
+	self.debugNode.showBoundingBoxes(True)
 	self.debugNode.showNormals(False)
 	self.debugNode.showWireframe(True)
 	self.debugNode.showConstraints(True)
@@ -202,23 +197,20 @@ class MakeObject(object):
 	sphereShape = BulletSphereShape(sr)
 	
 	if shapeCheck == 'b':
-	    self.makeShape = boxShape
-	    
+	    self.makeShape = boxShape   
 	
 	# Sphere shapes don't seem to work now... :P who cares...
 	elif shapeCheck == 's':
 	    self.makeShape = sphereShape
 	
-	
 	# Create the body
 	self.body = BulletRigidBodyNode(self.name)
-	self.bodyNP = self.mainWorld.worldNP.attachNewNode(self.body)
+	self.bodyNP = GAMEPLAY_NODES['ITEM'].attachNewNode(self.body)
 	self.bodyNP.node().addShape(self.makeShape)
 	self.bodyNP.node().setMass(mass)
 	self.bodyNP.node().setDeactivationEnabled(False)
 	self.bodyNP.setCollideMask(BitMask32.allOn())
 	
-
 	# Add a visual to the solid body
 	visNP = loader.loadModel('../assets/models/box.egg')
 	#visNP.setScale(0.5, 0.5, 0.5)
@@ -227,17 +219,3 @@ class MakeObject(object):
 	
 	# Finally add this object to the mainPhysics world
 	self.mainWorld.world.attachRigidBody(self.body)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-	

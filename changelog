@@ -70,3 +70,15 @@ Version 0.0.01
 - Blender sheet needs a redo, a lot of tags have changed
 - removed old useless models(egg files)
 
+20/06/2012
+> MJ-meo-dmt
+
+- Alot has changed.. Manou added his filter and buffersystem
+- Most of the code changed aswell to much to list. Kinda confusing atm...
+- Problems atm:
+  - Player collision is up to shit
+  - Low end pc's suffer to run the game
+  - Event System setup is still useless(basic)
+  - Object Parser works fine now, still lights setup is not perfect well nothing is...
+- I (mj) is busy sorting out the Player.py trying to get the player collisions to work right, as for the eventsystem to be added under objects
+

@@ -21,6 +21,8 @@ from direct.showbase.DirectObject import DirectObject
 
 # Game imports
 from globals import *
+from deferredLight import *
+from eventcomponent import *
 
 
 #----------------------------------------------------------------------#
@@ -29,7 +31,7 @@ from globals import *
 
 
 # Base object class
-class baseObject(DirectObject):
+class baseObject():
     
     """
     baseObject Class:
@@ -39,254 +41,174 @@ class baseObject(DirectObject):
     
     def __init__(self):
     
-	self.objectName = ""
-	self.objectTriggers = ""
-	self.objectArea = 0
-	self.objectPicker = ""
-	self.objectNeeds = ""
-	self.objectStatus = ""
-	self.objectSoundON = ""
-	self.objectSoundOFF = ""
-	self.objectStyle = ""
-	self.objectPhysics = ""
-	self.objectMass = 0.0
-	self.objectParent = ""
-    
-	##  LIGHTS
-	self.lightType = ""
-	self.lightRed = 0.0
-	self.lightGreen = 0.0
-	self.lightBlue = 0.0
-	self.lightPower = 0.0
-    
-	self.objectPosition = Point3(0, 0, 0)
-	self.objectHpr = VBase3(0, 0, 0)
-	self.objectScale = VBase3(0, 0, 0)
-    
+        self.name = ""
+        self.triggers = ""
+        self.area = 0
+        self.pickable = ""
+        self.needs = ""
+        self.status = ""
+        self.soundON = ""
+        self.soundOFF = ""
+        self.style = ""
+        self.physics = ""
+        self.mass = 0.0
+        self.parent = ""
 
-
+        self.position = Point3(0, 0, 0)
+        self.hpr = VBase3(0, 0, 0)
+        self.scale = VBase3(0, 0, 0)
 
 class GameObject(baseObject):
     
-    
-    def __init__(self, _base, _physics, _world, _model, object):
-	
+    def __init__(self, _model, object):
         
-        # __init__ the base class
         baseObject.__init__(self)
-        
-        # Base 
-        self._base = _base
-        
-        # Base Physics
-        self._physics = _physics
-        
-        # Base World
-        self._world = _world
-        
-        # Get the object
+       
         self.object = object
-	
-	################################################
-        ###### Get the <TAG's> from the egg file #######
-	################################################
-	
-	# Get the correct Name for the object
-	self.tagList = ['ROOM', 'SENSOR', 'DOOR', 'PLAYER', 'TRIGGER', 'LIGHT',
-		'ITEM', 'SCREEN', 'PARTICLES', 'SUIT', 'DECOR']
-
-	name = ''
-	self.objectType = None
-	for i in self.tagList:
-	    if self.object.hasTag(i):
-		self.objectType = i
-		name = self.object.getTag(i)
-		
-	    
+        self.event = False
+    
+        name = ''
+        self.type = 'DECOR'
         
-        # Get object name
-        self.objectName = name
-	print 'Object name: ',self.objectName, ' have been made.'
-	
-        # Get object triggers
-        self.objectTriggers = self.object.getTag('TRIGGERS')
-	
-	# Get object Area
-	self.objectArea = self.object.getTag('AREA')
-	
-	# is object Pickable
-	self.objectPicker = self.object.getTag('PICKER')
-	
-	# Get object Needs
-	self.objectNeeds = self.object.getTag('NEEDS')
-	
-	# Get object Status
-	self.objectStatus = self.object.getTag('STATUS')
-	
-	# Get object SoundON
-	self.objectSoundON = self.object.getTag('SOUNDON')
-	
-	# Get object SoundOFF
-	self.objectSoundOFF = self.object.getTag('SOUNDOFF')
-	
-	# Get object Style
-	self.objectStyle = self.object.getTag('STYLE')
-	
-	# Get object Physics
-	self.objectPhysics = self.object.getTag('PHYSICS')
-	
-	# Get object Mass
-	self.objectMass = self.object.getTag('MASS')
-	
-	# Get object Parent
-	self.objectParent = self.object.getTag('PARENT')
-	
-	### GET OBJECT LOC, ROT, SCALE ###
-	self.objectPosition = self.object.getPos(_model)
-	self.objectHpr = self.object.getHpr(_model)
-	self.objectScale = self.object.getScale(_model)
-	
-	################################################
-	
-	
-	### LIGHT SPECIFICS ###
-	if self.objectType == 'LIGHT':
-	    
-	    ### LIGHTS SETTINGS ###
-	    # Type, Red, green, blue, power
-	    self.lightType = self.object.getTag('TYPE')
-	    self.lightRed = self.object.getTag('RED')
-	    self.lightGreen = self.object.getTag('GREEN')
-	    self.lightBlue = self.object.getTag('BLUE')
-	    self.lightPower = self.object.getTag('POWER')
-	    self.setLights()
-	
-	
-	###### INNER OBJECT SETUPS ######
-	# Setup object physics
-	if self.object.hasTag('PHYSICS'):
-	    self.setObjectPhysics()
-	
-	# Setup object RenderNode
-	self.setRenderNode()
-	
-    ### Set the object's render node ###
-    def setRenderNode(self):
-	
-	# Reparent Reference dict
-	setRenderNP = {}
-	###
-	setRenderNP['ROOM'] = self._world.roomNP
-	setRenderNP['SENSOR'] = self._world.sensorNP
-	setRenderNP['DOOR'] = self._world.doorNP
-	setRenderNP['PLAYER'] = self._world.playerNP
-	setRenderNP['TRIGGER'] = self._world.triggerNP
-	setRenderNP['LIGHT'] = self._world.lightNP
-	setRenderNP['ITEM'] = self._world.itemNP
-	setRenderNP['SCREEN'] = self._world.screenNP
-	setRenderNP['PARTICLES'] = self._world.particleNP
-	setRenderNP['SUIT'] = self._world.suitNP
-	setRenderNP['DECOR'] = self._world.decorNP
-	###
-	
-	# Get the correct NP
-	for tag in self.tagList:
-	    
-	    if self.object.hasTag(tag):
-		
-		return self.object.reparentTo(setRenderNP[tag])
-	
-	
-    ### Setup the object's physics body ###
-    def setObjectPhysics(self):
-	"""
-	Method for setting up the object's physics.
-	Counts for SENSOR's aswell.
-	"""
-	
-	Physics = self.objectPhysics
-	Mass = 0.0#self.objectMass
-	
-	# Get the geom node
-	objectNode = self.object.node()
-	objectGeom = objectNode.getGeom(0)
-	    
-	# Setup the bullet mesh
-	objectMesh = BulletTriangleMesh()
-	objectMesh.addGeom(objectGeom)
-	
-	# Setup a static object
-	if Physics == 'STATIC':
-	    
-	    body = BulletRigidBodyNode('Bullet '+self.objectName)
-	    self.bodyNP = self._world.staticNP.attachNewNode(body)
-	    shape = BulletTriangleMeshShape(objectMesh, dynamic=False)
-	    self.bodyNP.node().setKinematic(True)
-	    self.bodyNP.node().addShape(shape)
-	    self.bodyNP.node().setMass(Mass)
-	    self.bodyNP.setCollideMask(BitMask32.allOn())
-	    
-	    # Attach the static object to the _physics world
-	    return self._physics.world.attachRigidBody(body)
-	
-	# Setup a Dynamic object
-	if Physics == 'DYNAMIC':
-	    
-	    body = BulletRigidBodyNode('Bullet '+self.objectName)
-	    self.bodyNP = self._world.dynamicNP.attachNewNode(body)
-	    shape = BulletTriangleMeshShape(objectMesh, dynamic=True)
-	    self.bodyNP.node().addShape(shape)
-	    self.bodyNP.node().setMass(Mass)
-	    self.bodyNP.setCollideMask(BitMask32.allOn())
-	    
-	    # Attach the dynamic object to the _physics world
-	    return self._physics.world.attachRigidBody(body)
-	
-	# Setup a Ghost object
-	if Physics == 'GHOST':
-	    
-	    ghost = BulletGhostNode('Ghost_sensor '+self.objectName)
-	    shape = BulletTriangleMeshShape(objectMesh, dynamic=False)
-	    ghost.addShape(shape)
-	    self.ghostNP = self._world.sensorNP.attachNewNode(ghost)
-	    self.ghostNP.setPos(self.objectPosition)
-	    self.ghostNP.setCollideMask(BitMask32(0x0f))
-	    
-	    # Attach the ghost object to the _physics world
-	    return self._physics.world.attachGhost(ghost)
-	
+        for i in OBJECTS_TYPES:
+            if self.object.hasTag(i):
+                self.type = i
+                name = self.object.getTag(i)
+                
+                if i in EVENT_LIST:
+                    self.event = EVENT[i]
+                    
+                else:
+                    pass
+        
+        print "Object Event: ",self.event
+        
+        self.name = name
+        self.triggers = self.object.getTag('triggers')
+        self.area = self.object.getTag('area')
+        self.pickable = self.object.getTag('pickable')
+        self.needs = self.object.getTag('needs')
+        self.status = self.object.getTag('status')
+        self.soundON = self.object.getTag('soundON')
+        self.soundOFF = self.object.getTag('soundOFF')
+        self.style = self.object.getTag('style')
+        self.physics = self.object.getTag('physics')
+        self.mass = self.object.getTag('mass')
+        self.parent = self.object.getTag('parent')
+        
+        self.shadows = 0
+
+        self.position = self.object.getPos(_model)
+        self.hpr = self.object.getHpr(_model)
+        self.scale = self.object.getScale(_model)
+        
+        ## TESTING
+        self.bodyNP = False
+        print "Outside: ", self.bodyNP
+        if self.physics:
+            self.set_physics()
+        print "Outside After: ", self.bodyNP
+        
+        self.render()
+        
+        print(self.type)
+        if self.type == 'LIGHT':
+            self.create_light()
+            
+        taskMgr.add(self.update,'update'+self.name)
+        
+    def update(self,task):
+        if self.shadows == 1:
+            BUFFER_SYSTEM['main'].shadow_cube.setPos(self.object.getPos())
+        return task.cont
+
+    def render(self):
+
+        self.object.reparentTo(GAMEPLAY_NODES[self.type])
+
+
+    ### Method for setting up the object's physics. ###
+    def set_physics(self):
+        
+        Physics = self.physics
+        Mass = self.mass
+
+        # Get the geom node
+        objectNode = self.object.node()
+        objectGeom = objectNode.getGeom(0)
+            
+        # Setup the bullet mesh
+        objectMesh = BulletTriangleMesh()
+        objectMesh.addGeom(objectGeom)
+
+        # Setup a static object
+        if Physics == 'static':
+            body = BulletRigidBodyNode('Bullet '+self.name)
+            self.bodyNP = BULLET_NODES['STATICS'].attachNewNode(body)
+            shape = BulletTriangleMeshShape(objectMesh, dynamic=False)
+            self.bodyNP.node().setKinematic(True)
+            self.bodyNP.node().addShape(shape)
+            self.bodyNP.node().setMass(0)
+            self.bodyNP.setCollideMask(BitMask32.allOn())
+            print "inside IF 1: ", self.bodyNP
+            # Attach the static object to the _physics world
+            return PHYSICS['WORLD'].attachRigidBody(body), self.bodyNP
+
+        # Setup a Dynamic object
+        if Physics == 'dynamic':
+            body = BulletRigidBodyNode('Bullet '+self.name)
+            self.bodyNP = BULLET_NODES['DYNAMICS'].attachNewNode(body)
+            shape = BulletTriangleMeshShape(objectMesh, dynamic=True)
+            self.bodyNP.node().addShape(shape)
+            self.bodyNP.node().setMass(Mass)
+            self.bodyNP.setCollideMask(BitMask32.allOn())
+            print "inside IF 2: ", self.bodyNP
+            # Attach the dynamic object to the _physics world
+            return PHYSICS['WORLD'].attachRigidBody(body), self.bodyNP
+
+        # Setup a Ghost object
+        if Physics == 'ghost':
+            ghost = BulletGhostNode('Ghost_sensor '+self.name)
+            shape = BulletTriangleMeshShape(objectMesh, dynamic=False)
+            ghost.addShape(shape)
+            self.bodyNP = BULLET_NODES['GHOSTS'].attachNewNode(ghost)
+            self.bodyNP.setPos(self.position)
+            self.bodyNP.setCollideMask(BitMask32(0x0f))
+            print "inside IF 3: ", self.bodyNP
+            # Attach the ghost object to the _physics world
+            return PHYSICS['WORLD'].attachGhost(ghost)
+        
+        
     
     ### Setup lights ###
-    def setLights(self):
-	
-	if self.lightType == 'POINT':
-	    
-	    # Testing light: Remove if done
-	    ############################################
-	    # Setup lights for the level
-	    plight = PointLight('plight')
-	    plight.setColor(VBase4(0.7, 0.7, 0.7, 1))
-	    plnp = render.attachNewNode(plight)
-	    plnp.setPos(0, 0, 8)
-	    render.setLight(plnp)
-	    ############################################
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+    def create_light(self):
+
+        distance = float(self.object.getTag('distance'))
+        energy = float(self.object.getTag('energy'))
+        color = COLORS[self.object.getTag('color')]
+        
+        self.shadows = 0
+        if bool(self.object.getTag('shadows')) == True :
+            self.shadows = 1
+                    
+        light = DeferredLight(
+            shadows=self.shadows,
+            vizparent=self.object,
+            num=str(WORLD['CLASS'].num_lights),
+            movement=True,
+            buffer_system=BUFFER_SYSTEM['main'],
+            parent=RENDER_NODES['LIGHTS'],   
+            geom="../assets/models/sphere_simple2",
+            vizgeom="../assets/models/cube",
+            light_type="point",
+            color=color,
+            pos=self.position,
+            scale=distance,
+            style=self.object.getTag('simple_light'),
+            attenuation=Vec3(1, 1, 1),
+            energy = energy,
+            Kd=Vec3(1,1,1),
+            Ks=Vec3(1,1,1),
+            follow=self.object
+        )
 

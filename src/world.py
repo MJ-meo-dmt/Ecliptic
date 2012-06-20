@@ -19,116 +19,64 @@ from globals import *
 from egg_parse import *
 #---------------------------------------------------------------------#
 
-## Main World Class
+## World Class
 class World(DirectObject):
-	
-	"""
-	World Class:
-	
-	Handels the World and all the things in it.
-	"""
-	
-	def __init__(self):
-		
-		# Testing light: Remove if done
-		############################################
-		# Setup lights for the level
-		#plight = PointLight('plight')
-		#plight.setColor(VBase4(0.7, 0.7, 0.7, 1))
-		#plnp = render.attachNewNode(plight)
-		#plnp.setPos(0, 0, 8)
-		#render.setLight(plnp)
-		############################################
-		
-		# Keeps all geoms under this node: Game_Objects
-		self.master_GeomNP = render.attachNewNode('MASTER_GEOM')
-		# Keeps all Collision solids: Bullet shapes
-		self.master_ColNP = render.attachNewNode('MASTER_COL')
-		# Keeps all Lights under this node
-		self.master_LightNP = render.attachNewNode('MASTER_LIGHTS')
-		
-		# subnodes for Game_Objects
-		self.roomNP = self.master_GeomNP.attachNewNode('ROOMS')
-		self.sensorNP = self.master_GeomNP.attachNewNode('SENSORS')
-		self.doorNP = self.master_GeomNP.attachNewNode('DOORS')
-		self.playerNP = self.master_GeomNP.attachNewNode('PLAYER')
-		self.suitNP = self.master_GeomNP.attachNewNode('SUIT')
-		self.triggerNP = self.master_GeomNP.attachNewNode('TRIGGERS')
-		self.itemNP = self.master_GeomNP.attachNewNode('ITEMS')
-		self.screenNP = self.master_GeomNP.attachNewNode('SCREENS')
-		self.particleNP = self.master_GeomNP.attachNewNode('PARTICLES')
-		self.decorNP = self.master_GeomNP.attachNewNode('DECOR')
-		self.visLightNP = self.master_GeomNP.attachNewNode('VIS_LIGHTS')
-		
-		# subnodes for collision Game_objects
-		self.staticNP = self.master_ColNP.attachNewNode('STATIC_OBJECTS')
-		self.dynamicNP = self.master_ColNP.attachNewNode('DYNAMIC_OBJECTS')
-		
-		# subnodes for lights
-		self.lightNP = self.master_LightNP.attachNewNode('LIGHTS')
-		
-		
-		
-	def addLevel(self, levelName, levelObject):
-		"""
-		This method adds created levels to the LEVELS dict{}
-		
-		@param levelName: String_key for the level.
-		@param levelObject: The created level itself.
-		"""
-		LEVELS[levelName] = levelObject
-		
-		
-	
 
-## MakeLevel Class
-class MakeLevel():
-	
-	"""
-	MakeLevel Class:
-	
-	Handles the creation of levels.
-	"""
-	
-	def __init__(self, _base, _physics, _world, levelName, levelModelPath):
-		"""
-		constructor:
-		
-		@param levelName: String_Name for the level itself.
-		@param levelModelPath: The path to the model file, for the level
-		"""
-		# Base Class
-		self._base = _base
-		
-		# Base Physics
-		self._physics = _physics
-		
-		# Base World
-		self._world = _world
-		
-		# Set the level name
-		self.levelName = levelName
-		
-		# Load the model for the level
-		self.level = loader.loadModel(levelModelPath)
-		
-		# Parse the egg model file and setup the level
-		ParseMain(self._base, self._physics, self._world, self.level)
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+    def __init__(self):
+        
+        # Origin of the world
+        WORLD['origin'] = render.attachNewNode('origin')
+        WORLD['origin'].setPos(0,0,0)
+        
+        # Rendering nodes
+        RENDER_NODES['GEOMS']       = render.attachNewNode('MASTER_GEOM')
+        RENDER_NODES['LIGHTS']      = render.attachNewNode('MASTER_LIGHTS')
+        RENDER_NODES['TRANSPS']     = render.attachNewNode('MASTER_TRANSPARENTS')
+        
+        # Bullet nodes
+        BULLET_NODES['MASTER']      = render.attachNewNode('MASTER_COL')
+        BULLET_NODES['STATICS']     = BULLET_NODES['MASTER'].attachNewNode('STATIC_OBJECTS')
+        BULLET_NODES['DYNAMICS']    = BULLET_NODES['MASTER'].attachNewNode('DYNAMIC_OBJECTS')
+        BULLET_NODES['GHOSTS']      = BULLET_NODES['MASTER'].attachNewNode('GHOST_OBJECTS')
+      
+        # Gameplay nodes
+        GAMEPLAY_NODES['SENSOR']    = RENDER_NODES['GEOMS'].attachNewNode('SENSORS')
+        GAMEPLAY_NODES['DOOR']      = RENDER_NODES['GEOMS'].attachNewNode('DOORS')
+        GAMEPLAY_NODES['PLAYER']    = RENDER_NODES['GEOMS'].attachNewNode('PLAYER')
+        GAMEPLAY_NODES['SUIT']      = RENDER_NODES['GEOMS'].attachNewNode('SUIT')
+        GAMEPLAY_NODES['TRIGGER']   = RENDER_NODES['GEOMS'].attachNewNode('TRIGGERS')
+        GAMEPLAY_NODES['ITEM']      = RENDER_NODES['GEOMS'].attachNewNode('ITEMS')
+        GAMEPLAY_NODES['SCREEN']    = RENDER_NODES['GEOMS'].attachNewNode('SCREENS')
+        GAMEPLAY_NODES['PARTICLES'] = RENDER_NODES['GEOMS'].attachNewNode('PARTICLES')
+        GAMEPLAY_NODES['DECOR']     = RENDER_NODES['GEOMS'].attachNewNode('DECORS')
+        GAMEPLAY_NODES['LIGHT']     = RENDER_NODES['GEOMS'].attachNewNode('VIS_LIGHTS')
+        
+        # Attributes
+        RENDER_NODES['LIGHTS'].node().setAttrib(DepthTestAttrib.make(RenderAttrib.MLess))
+        RENDER_NODES['LIGHTS'].node().setAttrib(ColorBlendAttrib.make(ColorBlendAttrib.MAdd))
+        RENDER_NODES['LIGHTS'].node().setAttrib(DepthWriteAttrib.make(DepthWriteAttrib.MOff))
+        RENDER_NODES['LIGHTS'].node().setAttrib(CullFaceAttrib.make(CullFaceAttrib.MCullCounterClockwise))
+        
+        # 
+        self.num_lights = 0
+        
+
+    def addLevel(self, levelName, levelObject):
+        """
+        This method adds created levels to the LEVELS dict{}
+
+        @param levelName: String_key for the level.
+        @param levelObject: The created level itself.
+        """
+        LEVELS[levelName] = levelObject
+
+## Level Class
+class Level():
+
+    def __init__(self, name, model):
+  
+        self.name = name
+        self.level = loader.loadModel(model)
+
+        # Parse the egg model file and setup the level
+        ParseMain(self.level)
