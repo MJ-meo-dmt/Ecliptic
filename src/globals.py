@@ -18,16 +18,6 @@ ENTITY = {}
 STATIONS = {}
 
 # Event Components
-EVENT = {}
-EVENT['SENSOR'] = {}
-EVENT['DOOR'] = {}
-EVENT['PLAYER'] = {}
-EVENT['TRIGGER'] = {}
-EVENT['LIGHT'] = {}
-EVENT['ITEM'] = {}
-EVENT['SCREEN'] = {}
-EVENT['PARTICLES'] = {}
-EVENT['SUIT'] = {}
 EVENT_LIST = ['SENSOR', 'DOOR', 'PLAYER', 'TRIGGER', 'LIGHT','ITEM', 'SCREEN', 'PARTICLES', 'SUIT']
 
 # Keeps all objects found in egg files with instance to class

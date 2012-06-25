@@ -74,14 +74,7 @@ class GameObject(baseObject):
             if self.object.hasTag(i):
                 self.type = i
                 name = self.object.getTag(i)
-                
-                if i in EVENT_LIST:
-                    self.event = EVENT[i]
-                    
-                else:
-                    pass
-        
-        print "Object Event: ",self.event
+
         
         self.name = name
         self.triggers = self.object.getTag('triggers')
@@ -104,10 +97,9 @@ class GameObject(baseObject):
         
         ## TESTING
         self.bodyNP = False
-        print "Outside: ", self.bodyNP
+        
         if self.physics:
             self.set_physics()
-        print "Outside After: ", self.bodyNP
         
         self.render()
         
@@ -116,6 +108,42 @@ class GameObject(baseObject):
             self.create_light()
             
         taskMgr.add(self.update,'update'+self.name)
+        
+        ## Add eventcomponent
+        _type = self.type
+        
+        if _type in EVENT_LIST:
+                        
+            if _type == 'SENSOR':
+                self.event = SensorEvent(self)
+                            
+            if _type == 'DOOR':
+                self.event = DoorEvent(self)
+                        
+            if _type == 'PLAYER':
+                self.event = PlayerEvent(self)
+                            
+            if _type == 'TRIGGER':
+                self.event = TriggerEvent(self)
+                            
+            if _type == 'LIGHT':
+                self.event = LightEvent(self)
+                            
+            if _type == 'ITEM':
+                self.event = ItemEvent(self)
+                        
+            if _type == 'SCREEN':
+                self.event = ScreenEvent(self)
+                            
+            if _type == 'PARTICLES':
+                self.event = ParticleEvent(self)
+                            
+            if _type == 'SUIT':
+                self.event = SuitEvent(self)
+                        
+                     
+            print self.event.object
+        
         
     def update(self,task):
         if self.shadows == 1:
@@ -150,7 +178,7 @@ class GameObject(baseObject):
             self.bodyNP.node().addShape(shape)
             self.bodyNP.node().setMass(0)
             self.bodyNP.setCollideMask(BitMask32.allOn())
-            print "inside IF 1: ", self.bodyNP
+            
             # Attach the static object to the _physics world
             return PHYSICS['WORLD'].attachRigidBody(body), self.bodyNP
 
@@ -162,7 +190,7 @@ class GameObject(baseObject):
             self.bodyNP.node().addShape(shape)
             self.bodyNP.node().setMass(Mass)
             self.bodyNP.setCollideMask(BitMask32.allOn())
-            print "inside IF 2: ", self.bodyNP
+            
             # Attach the dynamic object to the _physics world
             return PHYSICS['WORLD'].attachRigidBody(body), self.bodyNP
 
@@ -174,7 +202,7 @@ class GameObject(baseObject):
             self.bodyNP = BULLET_NODES['GHOSTS'].attachNewNode(ghost)
             self.bodyNP.setPos(self.position)
             self.bodyNP.setCollideMask(BitMask32(0x0f))
-            print "inside IF 3: ", self.bodyNP
+            
             # Attach the ghost object to the _physics world
             return PHYSICS['WORLD'].attachGhost(ghost)
         

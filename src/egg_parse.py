@@ -11,6 +11,7 @@ from direct.showbase.DirectObject import DirectObject
 # Game imports
 from globals import *
 from gameprop import *
+from eventcomponent import *
 
 
 #----------------------------------------------------------------------#
@@ -51,3 +52,5 @@ class ParseMain(NodePath):
             for _type in OBJECTS_TYPES :
                 if object.hasTag(_type):
                     OBJECTS[_type][object.getTag(_type)] = GameObject(self._model, object)
+                    
+                    

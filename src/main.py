@@ -92,7 +92,8 @@ class Main(ShowBase):
         BUFFER_SYSTEM['main'].render()
         
         # Event Instances
-        self.SensorEvent = SensorEvent(self)
+        #self.SensorEvent = SensorEvent(self)
+        self.messenger.send('Sen')
 
         # Debug: Show the scene graph.
         #self.render.ls()

@@ -1,53 +1,55 @@
 # Event component:
 # Add to the GameObject Class depending on type.
-
+from direct.showbase.DirectObject import DirectObject
 from globals import *
 
-class SensorEvent():
+class SensorEvent(DirectObject):
     
-    pass 
+    def __init__(self, object):
+        self.object = object
+        
+        #self.accept("Sen", self.openDoor)
+        
+    def openDoor(self):
+        print OBJECTS['Door'][self.target].name
     
 class DoorEvent():
     
-    pass 
+    def __init__(self, object):
+        self.object = object
     
 class PlayerEvent():
     
-    pass 
+    def __init__(self, object):
+        self.object = object
 
 class TriggerEvent():
     
-    pass 
-    
+    def __init__(self, object):
+        self.object = object
+        
 class LightEvent():
     
-    pass
+    def __init__(self, object):
+        self.object = object
     
 class ItemEvent():
     
-    pass 
+    def __init__(self, object):
+        self.object = object 
     
 class ScreenEvent():
     
-    pass 
+    def __init__(self, object):
+        self.object = object 
     
 class ParticleEvent():
     
-    pass 
+    def __init__(self, object):
+        self.object = object 
     
 class SuitEvent():
     
-    pass 
-    
-
-EVENT['SENSOR'] = SensorEvent()
-EVENT['DOOR'] = DoorEvent()
-EVENT['PLAYER'] = PlayerEvent()
-EVENT['TRIGGER'] = TriggerEvent()
-EVENT['LIGHT'] = LightEvent()
-EVENT['ITEM'] = ItemEvent()
-EVENT['SCREEN'] = ScreenEvent()
-EVENT['PARTICLES'] = ParticleEvent()
-EVENT['SUIT'] = SuitEvent()
-
+    def __init__(self, object):
+        self.object = object 
 
